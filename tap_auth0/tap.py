@@ -4,12 +4,14 @@ from typing import List
 
 from singer_sdk import Tap, Stream
 from singer_sdk import typing as th  # JSON schema typing helpers
+
 # TODO: Import your custom stream types here:
 from tap_auth0.streams import (
     Auth0Stream,
     UsersStream,
     GroupsStream,
 )
+
 # TODO: Compile a list of custom stream types here
 #       OR rewrite discover_streams() below with your custom logic.
 STREAM_TYPES = [
@@ -20,32 +22,27 @@ STREAM_TYPES = [
 
 class TapAuth0(Tap):
     """Auth0 tap class."""
+
     name = "tap-auth0"
 
-    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
-            "auth_token",
+            "client_id",
             th.StringType,
             required=True,
-            description="The token to authenticate against the API service"
+            description="App client ID",
         ),
         th.Property(
-            "project_ids",
-            th.ArrayType(th.StringType),
-            required=True,
-            description="Project IDs to replicate"
-        ),
-        th.Property(
-            "start_date",
-            th.DateTimeType,
-            description="The earliest record date to sync"
-        ),
-        th.Property(
-            "api_url",
+            "client_secret",
             th.StringType,
-            default="https://api.mysample.com",
-            description="The url for the API service"
+            required=True,
+            description="App client secret",
+        ),
+        th.Property(
+            "domain",
+            th.StringType,
+            required=True,
+            description="Tenant domain",
         ),
     ).to_dict()
 
