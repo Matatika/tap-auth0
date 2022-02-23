@@ -10,6 +10,7 @@ from singer_sdk.typing import (
 )
 
 from tap_auth0.schemas import CustomObject
+from tap_auth0.types import EmailType, IPv4Type, URIType
 
 
 class _IdentityObject(CustomObject):
@@ -24,7 +25,7 @@ class _IdentityObject(CustomObject):
 class UserObject(CustomObject):
     properties = PropertiesList(
         Property("user_id", StringType),
-        Property("email", StringType),
+        Property("email", EmailType),
         Property("email_verified", BooleanType),
         Property("username", StringType),
         Property("phone_number", StringType),
@@ -34,11 +35,11 @@ class UserObject(CustomObject):
         Property("identities", ArrayType(_IdentityObject)),
         Property("app_metadata", ObjectType()),
         Property("user_metadata", ObjectType()),
-        Property("picture", StringType),
+        Property("picture", URIType),
         Property("name", StringType),
         Property("nickname", StringType),
         Property("multifactor", ArrayType(StringType)),
-        Property("last_ip", StringType),
+        Property("last_ip", IPv4Type),
         Property("last_login", DateTimeType),
         Property("logins_count", IntegerType),
         Property("blocked", BooleanType),
