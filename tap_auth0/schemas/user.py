@@ -45,4 +45,6 @@ class UserObject(CustomObject):
         Property("blocked", BooleanType),
         Property("given_name", StringType),
         Property("family_name", StringType),
+        Property("last_password_reset", DateTimeType),
+        Property("locale", StringType),
     )
