@@ -4,13 +4,15 @@ from singer_sdk.typing import (
     ArrayType,
     BooleanType,
     DateTimeType,
+    EmailType,
     IntegerType,
+    IPv4Type,
     ObjectType,
     StringType,
+    URIType,
 )
 
 from tap_auth0.schemas import CustomObject
-from tap_auth0.types import EmailType, IPv4Type, URIType
 
 
 class _IdentityObject(CustomObject):
