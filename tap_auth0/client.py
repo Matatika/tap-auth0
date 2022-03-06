@@ -20,7 +20,6 @@ class Auth0Stream(RESTStream):
     include_totals = "true"
 
     start_jsonpath = "$.start"
-    length_jsonpath = "$.length"
     total_jsonpath = "$.total"
 
     @property
@@ -51,10 +50,9 @@ class Auth0Stream(RESTStream):
 
         json = response.json()
         start = next(iter(extract_jsonpath(self.start_jsonpath, json)))
-        length = next(iter(extract_jsonpath(self.length_jsonpath, json)))
         total = next(iter(extract_jsonpath(self.total_jsonpath, json)))
 
-        more = start + length < total
+        more = start + self.per_page < total
 
         if more:
             return math.floor((start + self.per_page) / self.per_page)
