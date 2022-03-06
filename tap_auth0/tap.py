@@ -10,6 +10,7 @@ from tap_auth0 import streams
 
 STREAM_TYPES = [
     streams.UsersStream,
+    streams.ClientsStream,
 ]
 
 

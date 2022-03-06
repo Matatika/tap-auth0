@@ -7,6 +7,7 @@ from urllib.parse import parse_qsl, urlsplit
 import requests
 
 from tap_auth0.client import Auth0Stream
+from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.user import UserObject
 
 
@@ -18,3 +19,13 @@ class UsersStream(Auth0Stream):
     path = "/users"
     primary_keys = ["user_id"]
     schema = UserObject.schema
+
+
+class ClientsStream(Auth0Stream):
+    """Define clients stream."""
+
+    name = "clients"
+    records_jsonpath = "$.clients[*]"
+    path = "/clients"
+    primary_keys = ["client_id"]
+    schema = ClientObject.schema
