@@ -1,22 +1,37 @@
-# tap-auth0
+# `tap-auth0`
 
 `tap-auth0` is a Singer tap for Auth0.
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
+## Overview
+
+`tap-auth0` extracts raw data from the [Auth0 Management API](https://auth0.com/docs/api/management/v2) for the following resources:
+- [Users](https://auth0.com/docs/api/management/v2#!/Users/get_users)
+- [Clients](https://auth0.com/docs/api/management/v2#!/Clients/get_clients)
+
 ## Installation
 
-- [ ] `Developer TODO:` Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
-
 ```bash
-pipx install tap-auth0
+# pip
+pip install git+https://github.com/Matatika/tap-auth0
+
+# pipx
+pipx install git+https://github.com/Matatika/tap-auth0
+
+# poetry
+poetry add git+https://github.com/Matatika/tap-auth0
 ```
 
 ## Configuration
 
 ### Accepted Config Options
 
-- [ ] `Developer TODO:` Provide a list of config options accepted by the tap.
+Name | Required | Description
+--- | --- | ---
+`client_id` | Yes | Your `tap-auth0` M2M application client ID
+`client_secret` | Yes | Your `tap-auth0` M2M application client secret
+`domain` | Yes | Your [Auth0 tenant](https://auth0.com/docs/get-started/auth0-overview/create-tenants) domain in the format `<TENANT_NAME>.<REGION_IDENTIFIER>.auth0.com`
 
 A full list of supported settings and capabilities for this
 tap is available by running:
@@ -27,7 +42,22 @@ tap-auth0 --about
 
 ### Source Authentication and Authorization
 
-- [ ] `Developer TODO:` If your tap requires special access on the source system, or any special authentication requirements, provide those here.
+Before using `tap-auth0`, you will need to [create a M2M application](https://auth0.com/docs/get-started/auth0-overview/create-applications/machine-to-machine-apps) from your [Auth0 Dashboard](https://auth0.com/docs/get-started/auth0-overview/dashboard). We recommend restricting your use of this application to `tap-auth0` only.
+
+Your `tap-auth0` M2M application will need authorized access to the [Auth0 Management API](https://auth0.com/docs/manage-users/user-accounts/manage-users-using-the-management-api) for your tenant, as well as a number of scopes.
+
+#### Scopes
+Your `tap-auth0` M2M application will need to have certain [scopes](https://auth0.com/docs/get-started/apis/scopes) set to allow `tap-auth0` to access specific Auth0 resource data.
+
+> All non-`read:` scopes can be disregarded, as `tap-auth0` will only ever 'read' data
+
+The available scopes differ depending on the type of Auth0 resource (relevant to `tap-auth0`):
+- [Users](https://auth0.com/docs/api/management/v2#!/Users/get_users)
+- [Clients](https://auth0.com/docs/api/management/v2#!/Clients/get_clients)
+
+If a required scope is not set for your `tap-auth0` M2M application, `tap-auth0` will encounter a `403 Forbidden` response from the Auth0 Management API and fail. You must set all required scopes for the resources listed above.
+
+Some scopes are not required. Setting these will allow `tap-auth0` to read more specific and possibly sensitive resource data, so do this at your own risk.
 
 ## Usage
 
@@ -42,8 +72,6 @@ tap-auth0 --config CONFIG --discover > ./catalog.json
 ```
 
 ## Developer Resources
-
-- [ ] `Developer TODO:` As a first step, scan the entire project for the text "`TODO:`" and complete any recommended steps, deleting the "TODO" references once completed.
 
 ### Initialize your Development Environment
 
