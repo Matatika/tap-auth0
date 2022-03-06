@@ -1,6 +1,4 @@
 from singer_sdk.typing import (
-    PropertiesList,
-    Property,
     ArrayType,
     BooleanType,
     DateTimeType,
@@ -8,6 +6,8 @@ from singer_sdk.typing import (
     IntegerType,
     IPv4Type,
     ObjectType,
+    PropertiesList,
+    Property,
     StringType,
     URIType,
 )

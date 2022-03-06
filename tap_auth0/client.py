@@ -1,12 +1,10 @@
 """REST client handling, including Auth0Stream base class."""
 
 import math
-from pathlib import Path
-from typing import Any, Dict, Optional, Union, List, Iterable
+from typing import Any, Dict, Optional
 
 import requests
 from memoization import cached
-
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 

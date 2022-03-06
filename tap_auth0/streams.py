@@ -1,11 +1,5 @@
 """Stream type classes for tap-auth0."""
 
-from singer_sdk.helpers.jsonpath import extract_jsonpath
-from typing import Any, Dict, Optional
-from urllib.parse import parse_qsl, urlsplit
-
-import requests
-
 from tap_auth0.client import Auth0Stream
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.user import UserObject

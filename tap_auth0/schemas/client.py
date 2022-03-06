@@ -1,11 +1,11 @@
 from singer_sdk.typing import (
-    PropertiesList,
-    Property,
     ArrayType,
     BooleanType,
     EmailType,
     IntegerType,
     ObjectType,
+    PropertiesList,
+    Property,
     StringType,
     URIType,
 )
