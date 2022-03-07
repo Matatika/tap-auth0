@@ -7,7 +7,7 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 ## Overview
 
 `tap-auth0` extracts raw data from the [Auth0 Management API](https://auth0.com/docs/api/management/v2) for the following resources:
-- [Users](https://auth0.com/docs/api/management/v2#!/Users/get_users)
+- [Users](https://auth0.com/docs/manage-users/user-migration/bulk-user-exports)
 - [Clients](https://auth0.com/docs/api/management/v2#!/Clients/get_clients)
 
 ## Installation
@@ -52,7 +52,7 @@ Your `tap-auth0` M2M application will need to have certain [scopes](https://auth
 > All non-`read:` scopes can be disregarded, as `tap-auth0` will only ever 'read' data
 
 The available scopes differ depending on the type of Auth0 resource (relevant to `tap-auth0`):
-- [Users](https://auth0.com/docs/api/management/v2#!/Users/get_users)
+- [Users](https://auth0.com/docs/manage-users/user-migration/bulk-user-exports)
 - [Clients](https://auth0.com/docs/api/management/v2#!/Clients/get_clients)
 
 If a required scope is not set for your `tap-auth0` M2M application, `tap-auth0` will encounter a `403 Forbidden` response from the Auth0 Management API and fail. You must set all required scopes for the resources listed above.
