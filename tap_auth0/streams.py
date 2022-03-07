@@ -23,9 +23,6 @@ class UsersStream(Auth0Stream):
     authenticator = None
     url_base = ""
 
-    job_poll_interval_ms = 2000
-    job_poll_max_count = 10
-
     def get_url_params(self, *args, **kwargs) -> None:
         return None
 
@@ -84,12 +81,14 @@ class UsersStream(Auth0Stream):
         return None
 
     def _poll_job(self, get_job_request: requests.PreparedRequest, count=1) -> Any:
+        job_poll_interval_ms = self.config["job_poll_interval_ms"]
+        job_poll_max_count = self.config["job_poll_max_count"]
 
-        if count > self.job_poll_max_count:
+        if count > job_poll_max_count:
             raise RuntimeError(
                 f"Export users job incomplete "
-                f"(polled {self.job_poll_max_count} time(s) "
-                f"at {self.job_poll_interval_ms} ms intervals). "
+                f"(polled {job_poll_max_count} time(s) "
+                f"at {job_poll_interval_ms} ms intervals). "
                 f"`job_poll_interval_ms` and `job_poll_max_count` may need adjusting."
             )
 
@@ -97,7 +96,7 @@ class UsersStream(Auth0Stream):
         job = get_job_response.json()
 
         if job["status"] == "pending":
-            time.sleep(self.job_poll_interval_ms / 1000)
+            time.sleep(job_poll_interval_ms / 1000)
             return self._poll_job(get_job_request, count=count + 1)
 
         return job

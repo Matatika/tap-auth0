@@ -37,6 +37,18 @@ class TapAuth0(Tap):
             required=True,
             description="Tenant domain",
         ),
+        th.Property(
+            "job_poll_interval_ms",
+            th.IntegerType,
+            default=2000,
+            description="Job poll interval (ms)",
+        ),
+        th.Property(
+            "job_poll_max_count",
+            th.IntegerType,
+            default=10,
+            description="Maximum job poll count",
+        ),
     ).to_dict()
 
     def discover_streams(self) -> List[Stream]:
