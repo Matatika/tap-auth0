@@ -27,11 +27,13 @@ poetry add git+https://github.com/Matatika/tap-auth0
 
 ### Accepted Config Options
 
-Name | Required | Description
---- | --- | ---
-`client_id` | Yes | Your `tap-auth0` M2M application client ID
-`client_secret` | Yes | Your `tap-auth0` M2M application client secret
-`domain` | Yes | Your [Auth0 tenant](https://auth0.com/docs/get-started/auth0-overview/create-tenants) domain in the format `<TENANT_NAME>.<REGION_IDENTIFIER>.auth0.com`
+Name | Required | Default | Description
+--- | --- | --- | ---
+`client_id` | Yes |  | Your `tap-auth0` M2M application client ID
+`client_secret` | Yes | | Your `tap-auth0` M2M application client secret
+`domain` | Yes | | Your [Auth0 tenant](https://auth0.com/docs/get-started/auth0-overview/create-tenants) domain in the format `<TENANT_NAME>.<REGION_IDENTIFIER>.auth0.com`
+`job_poll_interval_ms` | No | `2000` | The interval in milliseconds between requests made to [get a job](https://auth0.com/docs/api/management/v2#!/Jobs/get_jobs_by_id) when polling for a non-`pending` `status`
+`job_poll_max_count` | No | `20` | The number of requests made to [get a job](https://auth0.com/docs/api/management/v2#!/Jobs/get_jobs_by_id) when polling for a non-`pending` `status`
 
 A full list of supported settings and capabilities for this
 tap is available by running:

@@ -16,6 +16,10 @@ plugins:
     - name: client_secret
       kind: password
     - name: domain
+    - name: job_poll_interval_ms
+      kind: integer
+    - name: job_poll_max_count
+      kind: integer
   loaders:
   - name: target-jsonl
     variant: andyh1203
