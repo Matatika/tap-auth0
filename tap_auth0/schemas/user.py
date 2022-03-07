@@ -21,6 +21,7 @@ class _IdentityObject(CustomObject):
         Property("user_id", StringType),
         Property("provider", StringType),
         Property("isSocial", BooleanType),
+        Property("profileData", ObjectType())
     )
 
 
