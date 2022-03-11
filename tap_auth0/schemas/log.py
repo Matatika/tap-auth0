@@ -9,6 +9,7 @@ from singer_sdk.typing import (
 )
 
 from tap_auth0.schemas import CustomObject
+from tap_auth0.types.location_info import ContinentCodeType
 
 
 class _LocationInfoObject(CustomObject):
@@ -20,7 +21,7 @@ class _LocationInfoObject(CustomObject):
         Property("latitude", StringType),
         Property("longitude", StringType),
         Property("time_zone", StringType),
-        Property("continent_code", StringType),
+        Property("continent_code", ContinentCodeType),
     )
 
 
