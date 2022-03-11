@@ -25,6 +25,13 @@ class _LocationInfoObject(CustomObject):
     )
 
 
+class _Auth0ClientObject(CustomObject):
+    properties = PropertiesList(
+        Property("name", StringType),
+        Property("version", StringType),
+    )
+
+
 class LogObject(CustomObject):
     properties = PropertiesList(
         Property("date", DateTimeType),
@@ -47,4 +54,8 @@ class LogObject(CustomObject):
         Property("details", ObjectType()),
         Property("user_agent", StringType),
         Property("location_info", _LocationInfoObject),
+        Property("auth0_client", _Auth0ClientObject),
+        Property("_id", StringType),
+        Property("session_connection", StringType),
+        Property("client_ip", IPv4Type),
     )

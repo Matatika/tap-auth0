@@ -368,4 +368,6 @@ class ClientObject(CustomObject):
         Property("organization_usage", OrganizationUsageType),
         Property("organization_require_behavior", OrganizationRequireBehaviourType),
         Property("is_token_endpoint_ip_header_trusted", BooleanType),
+        Property("callback_url_template", BooleanType),
+        Property("owners", ArrayType(StringType)),
     )
