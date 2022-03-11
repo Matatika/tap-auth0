@@ -3,21 +3,24 @@
 import gzip
 import json
 import time
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, Optional
 
 import ndjson
 import requests
+from singer_sdk.exceptions import FatalAPIError, RetriableAPIError
 from singer_sdk.helpers.jsonpath import extract_jsonpath
+
 
 from tap_auth0.client import Auth0Stream
 from tap_auth0.schemas.client import ClientObject
+from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
 
 
 class UsersStream(Auth0Stream):
     """Define users stream."""
 
-    name = "users"
+    name = "stream_auth0_users"
     primary_keys = ["user_id"]
     schema = UserObject.schema
     authenticator = None
@@ -105,8 +108,88 @@ class UsersStream(Auth0Stream):
 class ClientsStream(Auth0Stream):
     """Define clients stream."""
 
-    name = "clients"
+    name = "stream_auth0_clients"
     records_jsonpath = "$.clients[*]"
     path = "/clients"
     primary_keys = ["client_id"]
     schema = ClientObject.schema
+
+
+class LogsStream(Auth0Stream):
+    """Define logs stream."""
+
+    name = "stream_auth0_logs"
+    path = "/logs"
+    primary_keys = ["log_id"]
+    schema = LogObject.schema
+    log_expired = False
+
+    replication_key = "log_id"
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = {}
+        params["sort"] = "date:1"
+        self.per_page = 1
+        params["per_page"] = self.per_page
+
+        if self.log_expired:
+            self.log_expired = False
+            return params
+
+        if next_page_token or self.get_context_state(context).get(
+            "replication_key_value"
+        ):
+
+            state = self.get_context_state(context).get("replication_key_value")
+
+            self.per_page = 100
+
+            params["take"] = self.per_page
+            params["per_page"] = self.per_page
+            params["from"] = next_page_token or state
+
+        return params
+
+    def get_next_page_token(
+        self, response: requests.Response, previous_token: Optional[Any]
+    ) -> Any:
+
+        if response.status_code == 400:
+            self.log_expired = True
+            return True
+
+        all_matches = extract_jsonpath(
+            f"$[{self.per_page - 1}].log_id", response.json()
+        )
+
+        try:
+            last_element = next(iter(all_matches))
+            return last_element
+        except StopIteration:
+            return None
+
+    def validate_response(self, response: requests.Response) -> None:
+
+        if response.status_code == 400:
+            return
+
+        elif 401 <= response.status_code < 500:
+            msg = (
+                f"{response.status_code} Client Error: "
+                f"{response.reason} for path: {self.path}"
+            )
+            raise FatalAPIError(msg)
+
+        elif 500 <= response.status_code < 600:
+            msg = (
+                f"{response.status_code} Server Error: "
+                f"{response.reason} for path: {self.path}"
+            )
+            raise RetriableAPIError(msg)
+
+    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+        if response.status_code == 400:
+            return []
+        return super().parse_response(response)
