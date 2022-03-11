@@ -46,5 +46,5 @@ class LogObject(CustomObject):
         Property("isMobile", BooleanType),
         Property("details", ObjectType()),
         Property("user_agent", StringType),
-        Property("location_info", _LocationInfoObject()),
+        Property("location_info", _LocationInfoObject),
     )
