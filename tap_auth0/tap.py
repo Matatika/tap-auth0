@@ -7,7 +7,11 @@ from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_auth0 import streams
 
-STREAM_TYPES = [streams.UsersStream, streams.ClientsStream, streams.LogsStream]
+STREAM_TYPES = [
+    streams.UsersStream,
+    streams.ClientsStream,
+    streams.LogsStream,
+]
 
 
 class TapAuth0(Tap):
