@@ -10,6 +10,7 @@ from singer_sdk.typing import (
 
 from tap_auth0.schemas import CustomObject
 from tap_auth0.types.location_info import ContinentCodeType
+from tap_auth0.types.log import LogTypeType
 
 
 class _LocationInfoObject(CustomObject):
@@ -35,7 +36,7 @@ class _Auth0ClientObject(CustomObject):
 class LogObject(CustomObject):
     properties = PropertiesList(
         Property("date", DateTimeType),
-        Property("type", StringType),
+        Property("type", LogTypeType),
         Property("description", StringType),
         Property("connection", StringType),
         Property("connection_id", StringType),
