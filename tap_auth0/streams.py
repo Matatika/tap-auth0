@@ -107,7 +107,6 @@ class ClientsStream(Auth0Stream):
     """Define clients stream."""
 
     name = "stream_auth0_clients"
-    records_jsonpath = "$.clients[*]"
     path = "/clients"
     primary_keys = ["client_id"]
     schema = ClientObject.schema
@@ -127,18 +126,21 @@ class LogsStream(Auth0Stream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        context_state = self.get_context_state(context)
-        last_log = next_page_token or context_state.get("replication_key_value")
-
-        if not self.log_expired and last_log:
-            return {
-                "from": last_log,
-                "take": self.per_page,
-            }
-
         params = super().get_url_params(context, next_page_token)
-        params.pop("include_totals")  # deprecated for /logs
-        params["sort"] = "date:1"
+
+        if params:
+            return params
+
+        context_state = self.get_context_state(context)
+        last_log_id = next_page_token or context_state.get("replication_key_value")
+
+        if last_log_id:
+            params["from"] = last_log_id
+            params["take"] = 100
+
+        else:
+            params["sort"] = "date:1"
+            params["per_page"] = 1
 
         return params
 
@@ -146,15 +148,11 @@ class LogsStream(Auth0Stream):
         if self.log_expired:
             return True
 
-        all_matches = extract_jsonpath(
-            f"$[{self.per_page - 1}].log_id", response.json()
-        )
+        next_page_token = super().get_next_page_token(response, *args, **kwargs)
+        if next_page_token:
+            return next_page_token
 
-        try:
-            last_element = next(iter(all_matches))
-            return last_element
-        except StopIteration:
-            return None
+        return next(iter(extract_jsonpath("$[*].log_id", response.json())), None)
 
     def validate_response(self, response: requests.Response) -> None:
         self.log_expired = response.status_code == 400

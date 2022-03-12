@@ -1,11 +1,10 @@
 """REST client handling, including Auth0Stream base class."""
 
-import math
 from typing import Any, Dict, Optional
+from urllib.parse import parse_qsl, urlsplit
 
 import requests
 from memoization import cached
-from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 
 from tap_auth0.auth import Auth0Authenticator
@@ -13,12 +12,6 @@ from tap_auth0.auth import Auth0Authenticator
 
 class Auth0Stream(RESTStream):
     """Auth0 stream class."""
-
-    per_page = 100
-    include_totals = "true"
-
-    start_jsonpath = "$.start"
-    total_jsonpath = "$.total"
 
     @property
     def url_base(self) -> str:
@@ -35,24 +28,13 @@ class Auth0Stream(RESTStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["page"] = next_page_token
-        params["per_page"] = self.per_page
-        params["include_totals"] = self.include_totals
-        return params
+        return dict(parse_qsl(urlsplit(next_page_token).query))
 
     def get_next_page_token(
         self, response: requests.Response, previous_token: Optional[Any]
     ) -> Any:
-        super().get_next_page_token(response, previous_token)
+        next_link = response.links.get("next")
+        if not next_link or not response.json():
+            return None
 
-        json = response.json()
-        start = next(iter(extract_jsonpath(self.start_jsonpath, json)))
-        total = next(iter(extract_jsonpath(self.total_jsonpath, json)))
-
-        more = start + self.per_page < total
-
-        if more:
-            return math.floor((start + self.per_page) / self.per_page)
-
-        return None
+        return next_link["url"]

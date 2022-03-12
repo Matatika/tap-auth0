@@ -1,12 +1,12 @@
 """Tests the tap using a mock base credentials config."""
 
 import unittest
+
 import responses
 import singer
 
-from tap_auth0.tap import TapAuth0
-
 import tap_auth0.tests.utils as test_utils
+from tap_auth0.tap import TapAuth0
 
 
 class TestTapAuth0Sync(unittest.TestCase):
@@ -79,6 +79,13 @@ class TestTapAuth0Sync(unittest.TestCase):
             responses.GET,
             "https://test.auth0.com/api/v2/logs",
             json=test_utils.logs_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://test.auth0.com/api/v2/logs",
+            json=[],
             status=200,
         )
 
