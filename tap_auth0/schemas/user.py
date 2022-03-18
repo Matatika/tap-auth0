@@ -4,7 +4,6 @@ from singer_sdk.typing import (
     DateTimeType,
     EmailType,
     IntegerType,
-    IPv4Type,
     ObjectType,
     PropertiesList,
     Property,
@@ -13,6 +12,7 @@ from singer_sdk.typing import (
 )
 
 from tap_auth0.schemas import CustomObject
+from tap_auth0.types import IPType
 
 
 class _IdentityObject(CustomObject):
@@ -42,7 +42,7 @@ class UserObject(CustomObject):
         Property("name", StringType),
         Property("nickname", StringType),
         Property("multifactor", ArrayType(StringType)),
-        Property("last_ip", IPv4Type),
+        Property("last_ip", IPType),
         Property("last_login", DateTimeType),
         Property("logins_count", IntegerType),
         Property("blocked", BooleanType),

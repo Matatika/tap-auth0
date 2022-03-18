@@ -1,7 +1,6 @@
 from singer_sdk.typing import (
     BooleanType,
     DateTimeType,
-    IPv4Type,
     ObjectType,
     PropertiesList,
     Property,
@@ -9,6 +8,7 @@ from singer_sdk.typing import (
 )
 
 from tap_auth0.schemas import CustomObject
+from tap_auth0.types import IPType
 from tap_auth0.types.location_info import ContinentCodeType
 from tap_auth0.types.log import LogTypeType
 
@@ -42,7 +42,7 @@ class LogObject(CustomObject):
         Property("connection_id", StringType),
         Property("client_id", StringType),
         Property("client_name", StringType),
-        Property("ip", IPv4Type),
+        Property("ip", IPType),
         Property("hostname", StringType),
         Property("user_id", StringType),
         Property("user_name", StringType),
@@ -58,5 +58,5 @@ class LogObject(CustomObject):
         Property("auth0_client", _Auth0ClientObject),
         Property("_id", StringType),
         Property("session_connection", StringType),
-        Property("client_ip", IPv4Type),
+        Property("client_ip", IPType),
     )
