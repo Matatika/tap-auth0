@@ -43,7 +43,7 @@ class LogObject(CustomObject):
         Property("client_id", StringType),
         Property("client_name", StringType),
         Property("ip", IPv4Type),
-        Property("hostname", IPv4Type),
+        Property("hostname", StringType),
         Property("user_id", StringType),
         Property("user_name", StringType),
         Property("audience", StringType),
