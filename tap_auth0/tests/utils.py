@@ -31,6 +31,19 @@ def users_export_job_completed(job_id: str):
     }
 
 
+def users_export_job_failed(job_id: str):
+    return {
+        "status": "failed",
+        "id": job_id,
+        "summary": {
+            "failed": len(users_data),
+            "updated": 0,
+            "inserted": 0,
+            "total": len(users_data),
+        },
+    }
+
+
 clients_data = {"start": 0, "total": 100, "clients": [{"client_id": "client_id_12345"}]}
 logs_data = [{"log_id": "log_id_12345"}]
 

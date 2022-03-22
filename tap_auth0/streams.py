@@ -101,6 +101,13 @@ class UsersStream(Auth0Stream):
         if status == "completed":
             return job
 
+        if status == "failed":
+            id_ = job["id"]
+            summary: dict[str, int] = job["summary"]
+            summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
+
+            raise RuntimeError(f"Job '{id_}' failed ({summary_format})")
+
         time.sleep(job_poll_interval_ms / 1000)
         return self._poll_job(get_job_request, count=count + 1)
 

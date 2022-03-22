@@ -91,6 +91,54 @@ class TestTapAuth0Sync(unittest.TestCase):
         self.assertIsInstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
 
     @responses.activate
+    def test_auth0_sync_users_failed(self):
+        """Test sync users with failed job"""
+
+        tap = test_utils.set_up_tap_with_custom_catalog(
+            self.mock_config, ["stream_auth0_users"]
+        )
+
+        responses.add(
+            responses.POST,
+            "https://test.auth0.com/oauth/token",
+            json={"access_token": "12345", "expires_in": 3622},
+            status=200,
+        )
+
+        job_id = "12345"
+        job = test_utils.users_export_job_pending(job_id)
+        responses.add(
+            responses.POST,
+            "https://test.auth0.com/api/v2/jobs/users-exports",
+            status=200,
+            json=job,
+        )
+
+        job = test_utils.users_export_job_processing(job_id)
+        responses.add(
+            responses.POST,
+            "https://test.auth0.com/api/v2/jobs/users-exports",
+            status=200,
+            json=job,
+        )
+
+        job = test_utils.users_export_job_failed(job_id)
+        responses.add(
+            responses.GET,
+            f"https://test.auth0.com/api/v2/jobs/{job_id}",
+            status=200,
+            json=job,
+        )
+
+        with self.assertRaises(RuntimeError) as err:
+            tap.sync_all()
+
+        self.assertIn(f"Job '{job_id}' failed", str(err.exception))
+
+        self.assertEqual(len(test_utils.SINGER_MESSAGES), 1)
+        self.assertIsInstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
+
+    @responses.activate
     def test_auth0_sync_clients(self):
         """Test sync clients."""
 
