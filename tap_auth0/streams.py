@@ -96,11 +96,20 @@ class UsersStream(Auth0Stream):
         get_job_response = self._request(get_job_request, None)
         job = get_job_response.json()
 
-        if job["status"] == "pending":
-            time.sleep(job_poll_interval_ms / 1000)
-            return self._poll_job(get_job_request, count=count + 1)
+        status = job["status"]
 
-        return job
+        if status == "completed":
+            return job
+
+        if status == "failed":
+            id_ = job["id"]
+            summary: dict[str, int] = job["summary"]
+            summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
+
+            raise RuntimeError(f"Job '{id_}' failed ({summary_format})")
+
+        time.sleep(job_poll_interval_ms / 1000)
+        return self._poll_job(get_job_request, count=count + 1)
 
 
 class ClientsStream(Auth0Stream):
