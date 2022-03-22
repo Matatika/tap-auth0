@@ -96,11 +96,13 @@ class UsersStream(Auth0Stream):
         get_job_response = self._request(get_job_request, None)
         job = get_job_response.json()
 
-        if job["status"] == "pending":
-            time.sleep(job_poll_interval_ms / 1000)
-            return self._poll_job(get_job_request, count=count + 1)
+        status = job["status"]
 
-        return job
+        if status == "completed":
+            return job
+
+        time.sleep(job_poll_interval_ms / 1000)
+        return self._poll_job(get_job_request, count=count + 1)
 
 
 class ClientsStream(Auth0Stream):

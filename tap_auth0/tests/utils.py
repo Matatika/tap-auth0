@@ -1,14 +1,37 @@
 """ Utilities used in this module """
-from tap_auth0.tap import TapAuth0
-
-from singer_sdk.helpers._singer import Catalog
 from singer_sdk.helpers import _catalog
+from singer_sdk.helpers._singer import Catalog
 
+from tap_auth0.tap import TapAuth0
 
 SINGER_MESSAGES = []
 
-clients_data = {"start": 0, "total": 100, "clients": [{"client_id": "client_id_12345"}]}
+users_data = [{"user_id": "user_id_12345"}]
 
+
+def users_export_job_pending(job_id: str):
+    return {
+        "status": "pending",
+        "id": job_id,
+    }
+
+
+def users_export_job_processing(job_id: str):
+    return {
+        "status": "processing",
+        "id": job_id,
+    }
+
+
+def users_export_job_completed(job_id: str):
+    return {
+        "status": "completed",
+        "id": job_id,
+        "location": "https://test.com",
+    }
+
+
+clients_data = {"start": 0, "total": 100, "clients": [{"client_id": "client_id_12345"}]}
 logs_data = [{"log_id": "log_id_12345"}]
 
 
