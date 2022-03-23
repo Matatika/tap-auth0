@@ -1,4 +1,5 @@
 from singer_sdk.typing import (
+    ArrayType,
     BooleanType,
     DateTimeType,
     ObjectType,
@@ -47,7 +48,7 @@ class LogObject(CustomObject):
         Property("user_id", StringType),
         Property("user_name", StringType),
         Property("audience", StringType),
-        Property("scope", StringType),
+        Property("scope", ArrayType(StringType)),
         Property("strategy", StringType),
         Property("strategy_type", StringType),
         Property("log_id", StringType),
