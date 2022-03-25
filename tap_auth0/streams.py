@@ -169,10 +169,19 @@ class LogsStream(Auth0Stream):
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         return [] if self.log_expired else super().parse_response(response)
-    
+
     def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
         row = super().post_process(row, context)
         scope = row.get("scope")
         if isinstance(scope, str):
             row.update({ "scope": scope.split() })
+        details_error = row.get("details", {}).get("error")
+        if isinstance(details_error, str):
+            if details_error == "":
+                row["details"].update({ "error": None })
+            else:
+                row["details"].update({ "error": {"message": details_error} })
+        response_body = row.get("response", {}).get("body")
+        if isinstance(response_body, dict):
+            row["response"].update({ "body": [response_body] })
         return row
