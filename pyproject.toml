@@ -25,6 +25,11 @@ mypy = "^0.910"
 types-requests = "^2.26.1"
 isort = "^5.10.1"
 responses = "0.17.0"
+pre-commit = "^2.17.0"
+
+[tool.black]
+include = "tap_auth0"
+extend-exclude = "tests"
 
 [tool.isort]
 profile = "black"
