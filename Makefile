@@ -8,10 +8,14 @@ init: ## Initialise repo for local development
 	@poetry run pre-commit install -f --install-hooks
 
 lint: ## Lint source files
-	@poetry run black --check .
+	poetry run autoflake --check --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .
+	poetry run isort --check .
+	poetry run black --check .
 
 lint-fix: ## Lint source files and fix any issues
-	@poetry run black .
+	poetry run autoflake --in-place --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .
+	poetry run isort .
+	poetry run black .
 
 test: ## Run tests
 	@poetry run pytest

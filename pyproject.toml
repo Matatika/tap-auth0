@@ -26,6 +26,7 @@ types-requests = "^2.26.1"
 isort = "^5.10.1"
 responses = "0.17.0"
 pre-commit = "^2.17.0"
+autoflake = "^1.4"
 
 [tool.black]
 include = "tap_auth0"
@@ -35,6 +36,7 @@ extend-exclude = "tests"
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
 src_paths = "tap_auth0"
+extend_skip = "tests"
 
 [build-system]
 # Uncomment the pinned version in favor of the git URL once
