@@ -11,6 +11,7 @@ lint: ## Lint source files
 	poetry run autoflake --check --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .
 	poetry run isort --check --diff .
 	poetry run black --check --diff .
+	poetry run flake8 --max-complexity 10
 
 lint-fix: ## Lint source files and fix any issues
 	poetry run autoflake --in-place --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .

@@ -39,9 +39,6 @@ class _EncryptionKeyObject(CustomObject):
     )
 
 
-from tap_auth0.schemas import CustomObject
-
-
 class _AWSObject(CustomObject):
     properties = PropertiesList(
         Property("principal", StringType),
