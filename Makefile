@@ -10,15 +10,15 @@ init: ## Initialise repo for local development
 	@poetry run pre-commit install -f --install-hooks
 
 lint: ## Lint source files
-	poetry run autoflake --check --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .
-	poetry run isort --check --diff .
-	poetry run black --check --diff .
-	poetry run flake8 --max-complexity 10
+	poetry run autoflake --check --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose tap_auth0
+	poetry run isort --check --diff tap_auth0
+	poetry run black --check --diff tap_auth0
+	poetry run flake8 --max-complexity 10 tap_auth0
 
 lint-fix: ## Lint source files and fix any issues
-	poetry run autoflake --in-place --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose .
-	poetry run isort .
-	poetry run black .
+	poetry run autoflake --in-place --recursive --exclude tests --remove-all-unused-imports --remove-duplicate-keys --remove-unused-variables --verbose tap_auth0
+	poetry run isort tap_auth0
+	poetry run black tap_auth0
 
 test: ## Run tests
 	@poetry run pytest
