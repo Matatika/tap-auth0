@@ -10,6 +10,7 @@ import requests
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 
 from tap_auth0.client import Auth0Stream
+from tap_auth0.pagination import LogsPaginator
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
@@ -23,9 +24,6 @@ class UsersStream(Auth0Stream):
     schema = UserObject.schema
     authenticator = None
     url_base = ""
-
-    def get_url_params(self, *args, **kwargs) -> None:
-        return None
 
     # since Auth0 restricts the total number of users returned from the get users
     # endpoint to 1000 (including paging), we need to create a user export job in order
@@ -78,9 +76,6 @@ class UsersStream(Auth0Stream):
 
         yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
 
-    def get_next_page_token(self, *args, **kwargs) -> None:
-        return None
-
     def _poll_job(self, get_job_request: requests.PreparedRequest, count=1) -> Any:
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
         job_poll_max_count = self.config["job_poll_max_count"]
@@ -129,7 +124,6 @@ class LogsStream(Auth0Stream):
     primary_keys = ["log_id"]
     replication_key = "log_id"
     schema = LogObject.schema
-
     log_expired = False
 
     def get_url_params(
@@ -143,7 +137,7 @@ class LogsStream(Auth0Stream):
         context_state = self.get_context_state(context)
         last_log_id = next_page_token or context_state.get("replication_key_value")
 
-        if last_log_id:
+        if last_log_id and not self.log_expired:
             params["from"] = last_log_id
             params["take"] = 100
 
@@ -153,22 +147,22 @@ class LogsStream(Auth0Stream):
 
         return params
 
-    def get_next_page_token(self, response: requests.Response, *args, **kwargs) -> Any:
-        if self.log_expired:
-            return True
+    def get_new_paginator(self):
+        def log_expired_callback(response: requests.Response):
+            self.log_expired = response.status_code == 400
+            return self.log_expired
 
-        next_page_token = super().get_next_page_token(response, *args, **kwargs)
-        if next_page_token:
-            return next_page_token
+        return LogsPaginator(log_expired_callback)
 
-        return next(iter(extract_jsonpath("$[*].log_id", response.json())), None)
+    def validate_response(self, response: requests.Response):
+        if response.status_code == 400:
+            return
 
-    def validate_response(self, response: requests.Response) -> None:
-        self.log_expired = response.status_code == 400
-        return None if self.log_expired else super().validate_response(response)
+        super().validate_response(response)
+        self.log_expired = False
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        return [] if self.log_expired else super().parse_response(response)
+        return [] if response.status_code == 400 else super().parse_response(response)
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
         row = super().post_process(row, context)
