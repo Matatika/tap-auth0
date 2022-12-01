@@ -1,4 +1,4 @@
-.PHONY: help init link lint-fix
+.PHONY: help init lint lint-fix test
 
 help:
 	@echo AVAILABLE COMMANDS
