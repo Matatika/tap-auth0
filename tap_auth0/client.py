@@ -1,6 +1,6 @@
 """REST client handling, including Auth0Stream base class."""
 
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 from urllib.parse import ParseResult, parse_qsl
 
 from memoization import cached
@@ -14,26 +14,26 @@ class Auth0Stream(RESTStream):
     """Auth0 stream class."""
 
     @property
-    def url_base(self) -> str:
-        """Return the API URL root, configurable via tap settings."""
+    def url_base(self):
         domain = self.config["domain"]
         return f"https://{domain}/api/v2"
 
     @property
     @cached
-    def authenticator(self) -> Auth0Authenticator:
-        """Return a new authenticator object."""
+    def authenticator(self):
         return Auth0Authenticator.create_for_stream(self)
 
     def get_url_params(
         self,
-        context: Optional[dict],
+        context,
         next_page_token: Optional[Union[str, ParseResult]],
-    ) -> Dict[str, Any]:
+    ):
+        params = super().get_url_params(context, next_page_token)
+
         try:
             return dict(parse_qsl(next_page_token.query))
         except AttributeError:
-            return {}
+            return params
 
     def get_new_paginator(self):
         return Auth0Paginator()

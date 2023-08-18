@@ -3,7 +3,6 @@
 import gzip
 import json
 import time
-from typing import Any, Dict, Iterable, Optional
 
 import ndjson
 import requests
@@ -30,7 +29,7 @@ class UsersStream(Auth0Stream):
     # to bypass this limitation
     #
     # https://auth0.com/docs/manage-users/user-search/retrieve-users-with-get-users-endpoint#limitations
-    def get_records(self, *args, **kwargs) -> Iterable[Dict[str, Any]]:
+    def get_records(self, *args, **kwargs):
         authenticator = super().authenticator
         url_base = super().url_base
 
@@ -70,13 +69,13 @@ class UsersStream(Auth0Stream):
 
         return super().get_records(*args, **kwargs)
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+    def parse_response(self, response):
         users = gzip.decompress(response.content)
         users_ndjson = json.loads(users, cls=ndjson.Decoder)
 
         yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
 
-    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1) -> Any:
+    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
         job_poll_max_count = self.config["job_poll_max_count"]
 
@@ -126,9 +125,7 @@ class LogsStream(Auth0Stream):
     schema = LogObject.schema
     log_expired = False
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
+    def get_url_params(self, context, next_page_token):
         params = super().get_url_params(context, next_page_token)
 
         if params:
@@ -151,16 +148,16 @@ class LogsStream(Auth0Stream):
     def get_new_paginator(self):
         return LogsPaginator()
 
-    def validate_response(self, response: requests.Response):
+    def validate_response(self, response):
         if response.status_code == 400:
             return
 
         super().validate_response(response)
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+    def parse_response(self, response):
         return [] if response.status_code == 400 else super().parse_response(response)
 
-    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+    def post_process(self, row, context=None):
         row = super().post_process(row, context)
         scope = row.get("scope")
         if isinstance(scope, str):

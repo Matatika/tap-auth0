@@ -6,7 +6,7 @@ class LogTypeType(StringType):
     """https://auth0.com/docs/deploy-monitor/logs/log-event-type-codes"""
 
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

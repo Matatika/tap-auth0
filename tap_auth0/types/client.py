@@ -4,7 +4,7 @@ from singer_sdk.typing import StringType
 
 class AppTypeType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -18,7 +18,7 @@ class AppTypeType(StringType):
 
 class GrantTypeType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -38,7 +38,7 @@ class GrantTypeType(StringType):
 
 class TokenEndpointAuthMethodType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -51,7 +51,7 @@ class TokenEndpointAuthMethodType(StringType):
 
 class OrganizationUsageType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -64,7 +64,7 @@ class OrganizationUsageType(StringType):
 
 class OrganizationRequireBehaviourType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

@@ -4,7 +4,7 @@ from singer_sdk.typing import StringType
 
 class ContinentCodeType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

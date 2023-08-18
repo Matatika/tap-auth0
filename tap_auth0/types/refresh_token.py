@@ -4,7 +4,7 @@ from singer_sdk.typing import StringType
 
 class RotationTypeType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -16,7 +16,7 @@ class RotationTypeType(StringType):
 
 class ExpirationTypeType(StringType):
     @classproperty
-    def type_dict(cls) -> dict:
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

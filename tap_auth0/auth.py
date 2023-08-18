@@ -11,11 +11,11 @@ class Auth0Authenticator(OAuthAuthenticator, metaclass=SingletonMeta):
         return self.config["domain"]
 
     @property
-    def auth_endpoint(self) -> str:
+    def auth_endpoint(self):
         return f"https://{self.domain}/oauth/token"
 
     @property
-    def oauth_request_body(self) -> dict:
+    def oauth_request_body(self):
         """Define the OAuth request body for the Auth0 API."""
         return {
             "grant_type": "client_credentials",
@@ -25,7 +25,7 @@ class Auth0Authenticator(OAuthAuthenticator, metaclass=SingletonMeta):
         }
 
     @classmethod
-    def create_for_stream(cls, stream) -> "Auth0Authenticator":
+    def create_for_stream(cls, stream):
         return cls(
             stream=stream,
         )
