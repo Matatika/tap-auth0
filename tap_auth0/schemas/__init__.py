@@ -1,11 +1,11 @@
+from singer_sdk import typing as th
 from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import JSONTypeHelper, PropertiesList
 
 
-class CustomObject(JSONTypeHelper):
+class CustomObject(th.JSONTypeHelper):
     """Base custom object class"""
 
-    properties: PropertiesList
+    properties: th.PropertiesList
 
     @classproperty
     def type_dict(cls):

@@ -1,14 +1,4 @@
-from singer_sdk.typing import (
-    ArrayType,
-    BooleanType,
-    EmailType,
-    IntegerType,
-    ObjectType,
-    PropertiesList,
-    Property,
-    StringType,
-    URIType,
-)
+from singer_sdk import typing as th
 
 from tap_auth0.schemas import CustomObject
 from tap_auth0.types.client import (
@@ -23,348 +13,348 @@ from tap_auth0.types.refresh_token import ExpirationTypeType, RotationTypeType
 
 
 class _JWTConfigurationObject(CustomObject):
-    properties = PropertiesList(
-        Property("lifetime_in_seconds", IntegerType),
-        Property("secret_encoded", BooleanType),
-        Property("scopes", ObjectType()),
-        Property("alg", AlgType),
+    properties = th.PropertiesList(
+        th.Property("lifetime_in_seconds", th.IntegerType),
+        th.Property("secret_encoded", th.BooleanType),
+        th.Property("scopes", th.ObjectType()),
+        th.Property("alg", AlgType),
     )
 
 
 class _EncryptionKeyObject(CustomObject):
-    properties = PropertiesList(
-        Property("pub", StringType),
-        Property("cert", StringType),
-        Property("subject", StringType),
+    properties = th.PropertiesList(
+        th.Property("pub", th.StringType),
+        th.Property("cert", th.StringType),
+        th.Property("subject", th.StringType),
     )
 
 
 class _AWSObject(CustomObject):
-    properties = PropertiesList(
-        Property("principal", StringType),
-        Property("role", StringType),
-        Property("lifetime_in_seconds", IntegerType),
+    properties = th.PropertiesList(
+        th.Property("principal", th.StringType),
+        th.Property("role", th.StringType),
+        th.Property("lifetime_in_seconds", th.IntegerType),
     )
 
 
 class _AzureBlobObject(CustomObject):
-    properties = PropertiesList(
-        Property("accountName", StringType),
-        Property("storageAccessKey", StringType),
-        Property("containerName", StringType),
-        Property("blobName", StringType),
-        Property("expiration", IntegerType),
-        Property("signedIdentifier", StringType),
-        Property("blob_read", BooleanType),
-        Property("blob_write", BooleanType),
-        Property("blob_delete", BooleanType),
-        Property("container_read", BooleanType),
-        Property("container_write", BooleanType),
-        Property("container_delete", BooleanType),
-        Property("container_list", BooleanType),
+    properties = th.PropertiesList(
+        th.Property("accountName", th.StringType),
+        th.Property("storageAccessKey", th.StringType),
+        th.Property("containerName", th.StringType),
+        th.Property("blobName", th.StringType),
+        th.Property("expiration", th.IntegerType),
+        th.Property("signedIdentifier", th.StringType),
+        th.Property("blob_read", th.BooleanType),
+        th.Property("blob_write", th.BooleanType),
+        th.Property("blob_delete", th.BooleanType),
+        th.Property("container_read", th.BooleanType),
+        th.Property("container_write", th.BooleanType),
+        th.Property("container_delete", th.BooleanType),
+        th.Property("container_list", th.BooleanType),
     )
 
 
 class _AzureSBObject(CustomObject):
-    properties = PropertiesList(
-        Property("namespace", StringType),
-        Property("sasKeyName", StringType),
-        Property("sasKey", StringType),
-        Property("entityPath", StringType),
-        Property("expiration", IntegerType),
+    properties = th.PropertiesList(
+        th.Property("namespace", th.StringType),
+        th.Property("sasKeyName", th.StringType),
+        th.Property("sasKey", th.StringType),
+        th.Property("entityPath", th.StringType),
+        th.Property("expiration", th.IntegerType),
     )
 
 
 class _RMSObject(CustomObject):
-    properties = PropertiesList(
-        Property("url", URIType),
+    properties = th.PropertiesList(
+        th.Property("url", th.URIType),
     )
 
 
 class _MSCRMObject(CustomObject):
-    properties = PropertiesList(
-        Property("url", URIType),
+    properties = th.PropertiesList(
+        th.Property("url", th.URIType),
     )
 
 
 class _SlackObject(CustomObject):
-    properties = PropertiesList(
-        Property("team", StringType),
+    properties = th.PropertiesList(
+        th.Property("team", th.StringType),
     )
 
 
 class _SentryObject(CustomObject):
-    properties = PropertiesList(
-        Property("org_slug", StringType),
-        Property("base_url", URIType),
+    properties = th.PropertiesList(
+        th.Property("org_slug", th.StringType),
+        th.Property("base_url", th.URIType),
     )
 
 
 class _EchoSignObject(CustomObject):
-    properties = PropertiesList(
-        Property("domain", StringType),
+    properties = th.PropertiesList(
+        th.Property("domain", th.StringType),
     )
 
 
 class _EgnyteObject(CustomObject):
-    properties = PropertiesList(
-        Property("domain", StringType),
+    properties = th.PropertiesList(
+        th.Property("domain", th.StringType),
     )
 
 
 class _FirebaseObject(CustomObject):
-    properties = PropertiesList(
-        Property("secret", StringType),
-        Property("private_key_id", StringType),
-        Property("private_key", StringType),
-        Property("client_email", EmailType),
-        Property("lifetime_in_seconds", IntegerType),
+    properties = th.PropertiesList(
+        th.Property("secret", th.StringType),
+        th.Property("private_key_id", th.StringType),
+        th.Property("private_key", th.StringType),
+        th.Property("client_email", th.EmailType),
+        th.Property("lifetime_in_seconds", th.IntegerType),
     )
 
 
 class _NewRelicObject(CustomObject):
-    properties = PropertiesList(
-        Property("account", StringType),
+    properties = th.PropertiesList(
+        th.Property("account", th.StringType),
     )
 
 
 class _Office365Object(CustomObject):
-    properties = PropertiesList(
-        Property("domain", StringType),
-        Property("connection", StringType),
+    properties = th.PropertiesList(
+        th.Property("domain", th.StringType),
+        th.Property("connection", th.StringType),
     )
 
 
 class _SalesforceObject(CustomObject):
-    properties = PropertiesList(
-        Property("entity_id", URIType),
+    properties = th.PropertiesList(
+        th.Property("entity_id", th.URIType),
     )
 
 
 class _SalesforceAPIObject(CustomObject):
-    properties = PropertiesList(
-        Property("clientid", StringType),
-        Property("principal", StringType),
-        Property("communityName", StringType),
-        Property("community_url_section", StringType),
+    properties = th.PropertiesList(
+        th.Property("clientid", th.StringType),
+        th.Property("principal", th.StringType),
+        th.Property("communityName", th.StringType),
+        th.Property("community_url_section", th.StringType),
     )
 
 
 class _SalesforceSandboxAPIObject(CustomObject):
-    properties = PropertiesList(
-        Property("clientid", StringType),
-        Property("principal", StringType),
-        Property("communityName", StringType),
-        Property("community_url_section", StringType),
+    properties = th.PropertiesList(
+        th.Property("clientid", th.StringType),
+        th.Property("principal", th.StringType),
+        th.Property("communityName", th.StringType),
+        th.Property("community_url_section", th.StringType),
     )
 
 
 class _SAMLPObject(CustomObject):
-    properties = PropertiesList(
-        Property("mappings", ObjectType()),
-        Property("audience", StringType),
-        Property("recipient", StringType),
-        Property("createUpnClaim", BooleanType),
-        Property("mapUnknownClaimsAsIs", BooleanType),
-        Property("passthroughClaimsWithNoMapping", BooleanType),
-        Property("mapIdentities", BooleanType),
-        Property("signatureAlgorithm", StringType),
-        Property("digestAlgorithm", StringType),
-        Property("issuer", StringType),
-        Property("destination", StringType),
-        Property("lifetimeInSeconds", IntegerType),
-        Property("signResponse", BooleanType),
-        Property("nameIdentifierFormat", StringType),
-        Property("nameIdentifierProbes", ArrayType(StringType)),
-        Property("authnContextClassRef", StringType),
+    properties = th.PropertiesList(
+        th.Property("mappings", th.ObjectType()),
+        th.Property("audience", th.StringType),
+        th.Property("recipient", th.StringType),
+        th.Property("createUpnClaim", th.BooleanType),
+        th.Property("mapUnknownClaimsAsIs", th.BooleanType),
+        th.Property("passthroughClaimsWithNoMapping", th.BooleanType),
+        th.Property("mapIdentities", th.BooleanType),
+        th.Property("signatureAlgorithm", th.StringType),
+        th.Property("digestAlgorithm", th.StringType),
+        th.Property("issuer", th.StringType),
+        th.Property("destination", th.StringType),
+        th.Property("lifetimeInSeconds", th.IntegerType),
+        th.Property("signResponse", th.BooleanType),
+        th.Property("nameIdentifierFormat", th.StringType),
+        th.Property("nameIdentifierProbes", th.ArrayType(th.StringType)),
+        th.Property("authnContextClassRef", th.StringType),
     )
 
 
 class _LayerObject(CustomObject):
-    properties = PropertiesList(
-        Property("providerId", StringType),
-        Property("keyId", StringType),
-        Property("privateKey", StringType),
-        Property("principal", StringType),
-        Property("expiration", IntegerType),
+    properties = th.PropertiesList(
+        th.Property("providerId", th.StringType),
+        th.Property("keyId", th.StringType),
+        th.Property("privateKey", th.StringType),
+        th.Property("principal", th.StringType),
+        th.Property("expiration", th.IntegerType),
     )
 
 
 class _SAPAPIObject(CustomObject):
-    properties = PropertiesList(
-        Property("clientId", StringType),
-        Property("usernameAttribute", StringType),
-        Property("tokenEndpointUrl", URIType),
-        Property("scope", StringType),
-        Property("servicePassword", StringType),
-        Property("nameIdentifierFormat", StringType),
+    properties = th.PropertiesList(
+        th.Property("clientId", th.StringType),
+        th.Property("usernameAttribute", th.StringType),
+        th.Property("tokenEndpointUrl", th.URIType),
+        th.Property("scope", th.StringType),
+        th.Property("servicePassword", th.StringType),
+        th.Property("nameIdentifierFormat", th.StringType),
     )
 
 
 class _SharePointObject(CustomObject):
-    properties = PropertiesList(
-        Property("url", URIType),
-        Property("external_url", ArrayType(URIType)),
+    properties = th.PropertiesList(
+        th.Property("url", th.URIType),
+        th.Property("external_url", th.ArrayType(th.URIType)),
     )
 
 
 class _SpringCMObject(CustomObject):
-    properties = PropertiesList(
-        Property("acsurl", URIType),
+    properties = th.PropertiesList(
+        th.Property("acsurl", th.URIType),
     )
 
 
 class _WAMSObject(CustomObject):
-    properties = PropertiesList(
-        Property("masterkey", StringType),
+    properties = th.PropertiesList(
+        th.Property("masterkey", th.StringType),
     )
 
 
 class _ZendeskObject(CustomObject):
-    properties = PropertiesList(
-        Property("accountName", StringType),
+    properties = th.PropertiesList(
+        th.Property("accountName", th.StringType),
     )
 
 
 class _ZoomObject(CustomObject):
-    properties = PropertiesList(
-        Property("account", StringType),
+    properties = th.PropertiesList(
+        th.Property("account", th.StringType),
     )
 
 
 class _SSOIntegrationObject(CustomObject):
-    properties = PropertiesList(
-        Property("name", StringType),
-        Property("version", StringType),
+    properties = th.PropertiesList(
+        th.Property("name", th.StringType),
+        th.Property("version", th.StringType),
     )
 
 
 class _AddonsObject(CustomObject):
-    properties = PropertiesList(
-        Property("aws", _AWSObject),
-        Property("azure_blob", _AzureBlobObject),
-        Property("azure_sb", _AzureSBObject),
-        Property("rms", _RMSObject),
-        Property("mscrm", _MSCRMObject),
-        Property("slack", _SlackObject),
-        Property("sentry", _SentryObject),
-        Property("box", ObjectType()),
-        Property("cloudbees", ObjectType()),
-        Property("concur", ObjectType()),
-        Property("dropbox", ObjectType()),
-        Property("echosign", _EchoSignObject),
-        Property("egnyte", _EgnyteObject),
-        Property("firebase", _FirebaseObject),
-        Property("newrelic", _NewRelicObject),
-        Property("office365", _Office365Object),
-        Property("salesforce", _SalesforceObject),
-        Property("salesforce_api", _SalesforceAPIObject),
-        Property("salesforce_sandbox_api", _SalesforceSandboxAPIObject),
-        Property("samlp", _SAMLPObject),
-        Property("layer", _LayerObject),
-        Property("sap_api", _SAPAPIObject),
-        Property("sharepoint", _SharePointObject),
-        Property("springcm", _SpringCMObject),
-        Property("wams", _WAMSObject),
-        Property("wsfed", ObjectType()),
-        Property("zendesk", _ZendeskObject),
-        Property("zoom", _ZoomObject),
-        Property("sso_integration", _SSOIntegrationObject),
+    properties = th.PropertiesList(
+        th.Property("aws", _AWSObject),
+        th.Property("azure_blob", _AzureBlobObject),
+        th.Property("azure_sb", _AzureSBObject),
+        th.Property("rms", _RMSObject),
+        th.Property("mscrm", _MSCRMObject),
+        th.Property("slack", _SlackObject),
+        th.Property("sentry", _SentryObject),
+        th.Property("box", th.ObjectType()),
+        th.Property("cloudbees", th.ObjectType()),
+        th.Property("concur", th.ObjectType()),
+        th.Property("dropbox", th.ObjectType()),
+        th.Property("echosign", _EchoSignObject),
+        th.Property("egnyte", _EgnyteObject),
+        th.Property("firebase", _FirebaseObject),
+        th.Property("newrelic", _NewRelicObject),
+        th.Property("office365", _Office365Object),
+        th.Property("salesforce", _SalesforceObject),
+        th.Property("salesforce_api", _SalesforceAPIObject),
+        th.Property("salesforce_sandbox_api", _SalesforceSandboxAPIObject),
+        th.Property("samlp", _SAMLPObject),
+        th.Property("layer", _LayerObject),
+        th.Property("sap_api", _SAPAPIObject),
+        th.Property("sharepoint", _SharePointObject),
+        th.Property("springcm", _SpringCMObject),
+        th.Property("wams", _WAMSObject),
+        th.Property("wsfed", th.ObjectType()),
+        th.Property("zendesk", _ZendeskObject),
+        th.Property("zoom", _ZoomObject),
+        th.Property("sso_integration", _SSOIntegrationObject),
     )
 
 
 class _AndroidObject(CustomObject):
-    properties = PropertiesList(
-        Property("app_package_name", StringType),
-        Property("sha256_cert_fingerprints", ArrayType(StringType)),
+    properties = th.PropertiesList(
+        th.Property("app_package_name", th.StringType),
+        th.Property("sha256_cert_fingerprints", th.ArrayType(th.StringType)),
     )
 
 
 class _iOSObject(CustomObject):
-    properties = PropertiesList(
-        Property("team_id", StringType),
-        Property("app_bundle_identifier", StringType),
+    properties = th.PropertiesList(
+        th.Property("team_id", th.StringType),
+        th.Property("app_bundle_identifier", th.StringType),
     )
 
 
 class _MobileObject(CustomObject):
-    properties = PropertiesList(
-        Property("android", _AndroidObject),
-        Property("ios", _iOSObject),
+    properties = th.PropertiesList(
+        th.Property("android", _AndroidObject),
+        th.Property("ios", _iOSObject),
     )
 
 
 class _AppleObject(CustomObject):
-    properties = PropertiesList(
-        Property("enabled", BooleanType),
+    properties = th.PropertiesList(
+        th.Property("enabled", th.BooleanType),
     )
 
 
 class _FacebookObject(CustomObject):
-    properties = PropertiesList(
-        Property("enabled", BooleanType),
+    properties = th.PropertiesList(
+        th.Property("enabled", th.BooleanType),
     )
 
 
 class _NativeSocialLoginObject(CustomObject):
-    properties = PropertiesList(
-        Property("apple", _AppleObject),
-        Property("facebook", _FacebookObject),
+    properties = th.PropertiesList(
+        th.Property("apple", _AppleObject),
+        th.Property("facebook", _FacebookObject),
     )
 
 
 class _RefreshTokenObject(CustomObject):
-    properties = PropertiesList(
-        Property("rotation_type", RotationTypeType),
-        Property("expiration_type", ExpirationTypeType),
-        Property("leeway", IntegerType),
-        Property("token_lifetime", IntegerType),
-        Property("infinite_token_lifetime", BooleanType),
-        Property("idle_token_lifetime", IntegerType),
-        Property("infinite_idle_token_lifetime", BooleanType),
+    properties = th.PropertiesList(
+        th.Property("rotation_type", RotationTypeType),
+        th.Property("expiration_type", ExpirationTypeType),
+        th.Property("leeway", th.IntegerType),
+        th.Property("token_lifetime", th.IntegerType),
+        th.Property("infinite_token_lifetime", th.BooleanType),
+        th.Property("idle_token_lifetime", th.IntegerType),
+        th.Property("infinite_idle_token_lifetime", th.BooleanType),
     )
 
 
 class ClientObject(CustomObject):
-    properties = PropertiesList(
-        Property("client_id", StringType),
-        Property("tenant", StringType),
-        Property("name", StringType),
-        Property("description", StringType),
-        Property("global", BooleanType),
-        Property("client_secret", StringType),
-        Property("app_type", AppTypeType),
-        Property("logo_uri", URIType),
-        Property("is_first_party", BooleanType),
-        Property("oidc_conformant", BooleanType),
-        Property("callbacks", ArrayType(URIType)),
-        Property("allowed_origins", ArrayType(URIType)),
-        Property("web_origins", ArrayType(URIType)),
-        Property("client_aliases", ArrayType(StringType)),
-        Property("allowed_clients", ArrayType(StringType)),
-        Property("allowed_logout_urls", ArrayType(URIType)),
-        Property("grant_types", ArrayType(GrantTypeType)),
-        Property("jwt_configuration", _JWTConfigurationObject),
-        Property("signing_keys", ArrayType(ObjectType())),
-        Property("encryption_key", _EncryptionKeyObject),
-        Property("sso", BooleanType),
-        Property("sso_disabled", BooleanType),
-        Property("cross_origin_auth", BooleanType),
-        Property("cross_origin_loc", URIType),
-        Property("custom_login_page_on", BooleanType),
-        Property("custom_login_page", StringType),
-        Property("custom_login_page_preview", StringType),
-        Property("form_template", StringType),
-        Property("addons", _AddonsObject),
-        Property("token_endpoint_auth_method", TokenEndpointAuthMethodType),
-        Property("client_metadata", ObjectType()),
-        Property("mobile", _MobileObject),
-        Property("initiate_login_uri", URIType),
-        Property("native_social_login", _NativeSocialLoginObject),
-        Property("refresh_token", _RefreshTokenObject),
-        Property("organization_usage", OrganizationUsageType),
-        Property("organization_require_behavior", OrganizationRequireBehaviourType),
-        Property("is_token_endpoint_ip_header_trusted", BooleanType),
-        Property("callback_url_template", BooleanType),
-        Property("owners", ArrayType(StringType)),
+    properties = th.PropertiesList(
+        th.Property("client_id", th.StringType),
+        th.Property("tenant", th.StringType),
+        th.Property("name", th.StringType),
+        th.Property("description", th.StringType),
+        th.Property("global", th.BooleanType),
+        th.Property("client_secret", th.StringType),
+        th.Property("app_type", AppTypeType),
+        th.Property("logo_uri", th.URIType),
+        th.Property("is_first_party", th.BooleanType),
+        th.Property("oidc_conformant", th.BooleanType),
+        th.Property("callbacks", th.ArrayType(th.URIType)),
+        th.Property("allowed_origins", th.ArrayType(th.URIType)),
+        th.Property("web_origins", th.ArrayType(th.URIType)),
+        th.Property("client_aliases", th.ArrayType(th.StringType)),
+        th.Property("allowed_clients", th.ArrayType(th.StringType)),
+        th.Property("allowed_logout_urls", th.ArrayType(th.URIType)),
+        th.Property("grant_types", th.ArrayType(GrantTypeType)),
+        th.Property("jwt_configuration", _JWTConfigurationObject),
+        th.Property("signing_keys", th.ArrayType(th.ObjectType())),
+        th.Property("encryption_key", _EncryptionKeyObject),
+        th.Property("sso", th.BooleanType),
+        th.Property("sso_disabled", th.BooleanType),
+        th.Property("cross_origin_auth", th.BooleanType),
+        th.Property("cross_origin_loc", th.URIType),
+        th.Property("custom_login_page_on", th.BooleanType),
+        th.Property("custom_login_page", th.StringType),
+        th.Property("custom_login_page_preview", th.StringType),
+        th.Property("form_template", th.StringType),
+        th.Property("addons", _AddonsObject),
+        th.Property("token_endpoint_auth_method", TokenEndpointAuthMethodType),
+        th.Property("client_metadata", th.ObjectType()),
+        th.Property("mobile", _MobileObject),
+        th.Property("initiate_login_uri", th.URIType),
+        th.Property("native_social_login", _NativeSocialLoginObject),
+        th.Property("refresh_token", _RefreshTokenObject),
+        th.Property("organization_usage", OrganizationUsageType),
+        th.Property("organization_require_behavior", OrganizationRequireBehaviourType),
+        th.Property("is_token_endpoint_ip_header_trusted", th.BooleanType),
+        th.Property("callback_url_template", th.BooleanType),
+        th.Property("owners", th.ArrayType(th.StringType)),
     )
