@@ -136,8 +136,9 @@ class LogsStream(Auth0Stream):
 
         context_state = self.get_context_state(context)
         last_log_id = next_page_token or context_state.get("replication_key_value")
+        log_expired = last_log_id is True
 
-        if last_log_id and not self.log_expired:
+        if last_log_id and not log_expired:
             params["from"] = last_log_id
             params["take"] = 100
 
@@ -148,18 +149,13 @@ class LogsStream(Auth0Stream):
         return params
 
     def get_new_paginator(self):
-        def log_expired_callback(response: requests.Response):
-            self.log_expired = response.status_code == 400
-            return self.log_expired
-
-        return LogsPaginator(log_expired_callback)
+        return LogsPaginator()
 
     def validate_response(self, response: requests.Response):
         if response.status_code == 400:
             return
 
         super().validate_response(response)
-        self.log_expired = False
 
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         return [] if response.status_code == 400 else super().parse_response(response)

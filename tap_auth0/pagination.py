@@ -1,5 +1,3 @@
-from typing import Callable
-
 from requests import Response
 from singer_sdk.pagination import HeaderLinkPaginator, JSONPathPaginator
 
@@ -11,18 +9,9 @@ class Auth0Paginator(HeaderLinkPaginator):
 
 
 class LogsPaginator(Auth0Paginator):
-    def __init__(
-        self,
-        log_expired_callback: Callable[[Response], bool],
-        *args,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.log_expired_callback = log_expired_callback
-
     def get_next(self, response: Response):
         return (
-            self.log_expired_callback(response)
+            response.status_code == 400
             or super().get_next(response)
             or JSONPathPaginator("$[*].log_id").get_next(response)
         )
