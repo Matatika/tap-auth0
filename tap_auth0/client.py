@@ -37,3 +37,6 @@ class Auth0Stream(RESTStream):
 
     def get_new_paginator(self):
         return Auth0Paginator()
+
+    def backoff_max_tries(self):
+        return 8
