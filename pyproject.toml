@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-auth0"
-version = "0.3.1"
+version = "0.5.0"
 description = "`tap-auth0` is a Singer tap for Auth0, built with the Meltano SDK for Singer Taps."
 authors = ["Reuben Frankel", "Daniel Walker"]
 keywords = [
