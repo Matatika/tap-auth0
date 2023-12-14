@@ -15,8 +15,8 @@ requests = "^2.31.0"
 singer-sdk = "^0.32.0"
 ndjson = "^0.3.1"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
 tox = "^3.24.4"
 flake8 = "^4.0.1"
 black = "^22.3.0"
