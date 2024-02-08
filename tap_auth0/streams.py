@@ -86,8 +86,8 @@ class UsersStream(Auth0Stream):
         yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
 
     def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
-        job_poll_interval_ms = self.config["job_poll_interval_ms"]
-        job_poll_max_count = self.config["job_poll_max_count"]
+        job_poll_interval_ms: int = self.config["job_poll_interval_ms"]
+        job_poll_max_count: int = self.config["job_poll_max_count"]
 
         if count > job_poll_max_count:
             msg = (
@@ -113,7 +113,16 @@ class UsersStream(Auth0Stream):
             msg = f"Job '{id_}' failed ({summary_format})"
             raise RuntimeError(msg)
 
-        time.sleep(job_poll_interval_ms / 1000)
+        from_job = "time_left_seconds" in job
+        wait_s = job["time_left_seconds"] if from_job else job_poll_interval_ms / 1000
+
+        self.logger.info(
+            "Waiting %.1fs (from %s) for export job to complete",
+            wait_s,
+            "job" if from_job else "config",
+        )
+
+        time.sleep(wait_s)
         return self._poll_job(get_job_request, count=count + 1)
 
 
