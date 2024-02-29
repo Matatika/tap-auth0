@@ -18,7 +18,7 @@ ndjson = "^0.3.1"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 tox = "^3.24.4"
-flake8 = "^4.0.1"
+flake8 = "^5.0.4"
 black = "^23.3.0"
 pydocstyle = "^6.1.1"
 mypy = "^1.4"
