@@ -21,7 +21,7 @@ tox = "^3.24.4"
 flake8 = "^4.0.1"
 black = "^23.3.0"
 pydocstyle = "^6.1.1"
-mypy = "^0.910"
+mypy = "^1.4"
 types-requests = "^2.26.1"
 isort = {extras = ["colors"], version = "^5.10.1"}
 responses = "0.17.0"
