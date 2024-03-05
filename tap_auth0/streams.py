@@ -21,8 +21,11 @@ class UsersStream(Auth0Stream):
     name = "stream_auth0_users"
     primary_keys = ["user_id"]
     schema = UserObject.schema
-    authenticator = None
     url_base = ""
+
+    @property
+    def authenticator(self):
+        return None
 
     # since Auth0 restricts the total number of users returned from the get users
     # endpoint to 1000 (including paging), we need to create a user export job in order
