@@ -1,9 +1,9 @@
 """REST client handling, including Auth0Stream base class."""
 
+from functools import cached_property
 from typing import Optional, Union
 from urllib.parse import ParseResult, parse_qsl
 
-from memoization import cached
 from singer_sdk.streams import RESTStream
 
 from tap_auth0.auth import Auth0Authenticator
@@ -18,8 +18,7 @@ class Auth0Stream(RESTStream):
         domain = self.config["domain"]
         return f"https://{domain}/api/v2"
 
-    @property
-    @cached
+    @cached_property
     def authenticator(self):
         return Auth0Authenticator.create_for_stream(self)
 
