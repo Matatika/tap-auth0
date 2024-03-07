@@ -1,9 +1,12 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for JWT configuration objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class AlgType(StringType):
-    @classproperty
+class AlgType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,

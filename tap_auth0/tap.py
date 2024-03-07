@@ -2,6 +2,7 @@
 
 from singer_sdk import Tap
 from singer_sdk import typing as th
+from typing_extensions import override
 
 from tap_auth0 import streams
 
@@ -50,6 +51,7 @@ class TapAuth0(Tap):
         ),
     ).to_dict()
 
+    @override
     def discover_streams(self):
         return [stream_class(tap=self) for stream_class in STREAM_TYPES]
 

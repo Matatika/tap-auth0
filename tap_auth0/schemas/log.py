@@ -1,3 +1,5 @@
+"""Schema definitions for log objects."""
+
 from singer_sdk import typing as th
 
 from tap_auth0.schemas import CustomObject
