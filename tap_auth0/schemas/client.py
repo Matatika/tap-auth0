@@ -1,3 +1,5 @@
+"""Schema definitions for client objects."""
+
 from singer_sdk import typing as th
 
 from tap_auth0.schemas import CustomObject
@@ -270,7 +272,7 @@ class _AndroidObject(CustomObject):
     )
 
 
-class _iOSObject(CustomObject):
+class _iOSObject(CustomObject):  # noqa: N801
     properties = th.PropertiesList(
         th.Property("team_id", th.StringType),
         th.Property("app_bundle_identifier", th.StringType),

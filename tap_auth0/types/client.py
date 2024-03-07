@@ -1,9 +1,12 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for client objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class AppTypeType(StringType):
-    @classproperty
+class AppTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,
@@ -16,8 +19,9 @@ class AppTypeType(StringType):
         }
 
 
-class GrantTypeType(StringType):
-    @classproperty
+class GrantTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,
@@ -36,8 +40,9 @@ class GrantTypeType(StringType):
         }
 
 
-class TokenEndpointAuthMethodType(StringType):
-    @classproperty
+class TokenEndpointAuthMethodType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,
@@ -49,8 +54,9 @@ class TokenEndpointAuthMethodType(StringType):
         }
 
 
-class OrganizationUsageType(StringType):
-    @classproperty
+class OrganizationUsageType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,
@@ -62,8 +68,9 @@ class OrganizationUsageType(StringType):
         }
 
 
-class OrganizationRequireBehaviourType(StringType):
-    @classproperty
+class OrganizationRequireBehaviourType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
     def type_dict(cls):
         return {
             **super().type_dict,
