@@ -19,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-license = "AGPL-3.0"
+license = "AGPL-3.0-only"
 packages = [
     { include = "tap_auth0" },
 ]
