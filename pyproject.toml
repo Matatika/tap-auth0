@@ -60,7 +60,7 @@ ignore = [
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
-"tap_auth0/{schemas,types}/**/*" = [
+"tap_auth0/types/**/*" = [
     "D101",   # undocumented-public-class
     "N805",   # invalid-first-argument-name-for-method
 ]
