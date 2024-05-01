@@ -24,7 +24,7 @@ class UsersStream(Auth0Stream):
 
     name = "stream_auth0_users"
     primary_keys = ("user_id",)
-    schema = UserObject.schema
+    schema = UserObject.to_dict()
     url_base = ""
 
     @property
@@ -123,7 +123,7 @@ class ClientsStream(Auth0Stream):
     name = "stream_auth0_clients"
     path = "/clients"
     primary_keys = ("client_id",)
-    schema = ClientObject.schema
+    schema = ClientObject.to_dict()
 
 
 class LogsStream(Auth0Stream):
@@ -133,7 +133,7 @@ class LogsStream(Auth0Stream):
     path = "/logs"
     primary_keys = ("log_id",)
     replication_key = "log_id"
-    schema = LogObject.schema
+    schema = LogObject.to_dict()
     log_expired = False
 
     @override
