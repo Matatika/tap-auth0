@@ -33,7 +33,7 @@ requests = "^2.32.3"
 ndjson = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.1"
+pytest = "^8.2.2"
 singer-sdk = { version="^0.37.0", extras = ["testing"] }
 
 [tool.poetry.extras]
