@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import itertools
+
 import singer_sdk.typing as th
 from typing_extensions import override
 
@@ -15,6 +17,6 @@ class IPType(th.JSONTypeHelper):
         type_dicts: list[dict] = [ip_type.type_dict for ip_type in cls.ip_types]
 
         return {
-            "type": [td.pop("type") for td in type_dicts],
+            "type": list(set(itertools.chain(*[td.pop("type") for td in type_dicts]))),
             "oneOf": type_dicts,
         }
