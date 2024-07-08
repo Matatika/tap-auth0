@@ -1,15 +1,19 @@
 """Stream type classes for tap-auth0."""
 
+from __future__ import annotations
+
 import gzip
 import json
 import time
-from typing import Any, Dict, Iterable, Optional
+from http import HTTPStatus
 
 import ndjson
 import requests
 from singer_sdk.helpers.jsonpath import extract_jsonpath
+from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
+from tap_auth0.pagination import LogsPaginator
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
@@ -19,12 +23,13 @@ class UsersStream(Auth0Stream):
     """Define users stream."""
 
     name = "stream_auth0_users"
-    primary_keys = ["user_id"]
-    schema = UserObject.schema
-    authenticator = None
+    primary_keys = ("user_id",)
+    schema = UserObject.to_dict()
     url_base = ""
 
-    def get_url_params(self, *args, **kwargs) -> None:
+    @property
+    @override
+    def authenticator(self):
         return None
 
     # since Auth0 restricts the total number of users returned from the get users
@@ -32,7 +37,8 @@ class UsersStream(Auth0Stream):
     # to bypass this limitation
     #
     # https://auth0.com/docs/manage-users/user-search/retrieve-users-with-get-users-endpoint#limitations
-    def get_records(self, *args, **kwargs) -> Iterable[Dict[str, Any]]:
+    @override
+    def get_records(self, context):
         authenticator = super().authenticator
         url_base = super().url_base
 
@@ -70,28 +76,26 @@ class UsersStream(Auth0Stream):
         export_users_job = self._poll_job(get_export_users_job_request)
         self.path = export_users_job["location"]
 
-        return super().get_records(*args, **kwargs)
+        return super().get_records(context)
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
+    @override
+    def parse_response(self, response):
         users = gzip.decompress(response.content)
         users_ndjson = json.loads(users, cls=ndjson.Decoder)
 
         yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
 
-    def get_next_page_token(self, *args, **kwargs) -> None:
-        return None
-
-    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1) -> Any:
+    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
         job_poll_max_count = self.config["job_poll_max_count"]
 
         if count > job_poll_max_count:
-            raise RuntimeError(
-                f"Export users job incomplete "
-                f"(polled {job_poll_max_count} time(s) "
-                f"at {job_poll_interval_ms} ms intervals). "
-                f"`job_poll_interval_ms` and `job_poll_max_count` may need adjusting."
+            msg = (
+                f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
+                f"{job_poll_interval_ms} ms intervals). `job_poll_interval_ms` and "
+                "`job_poll_max_count` may need adjusting."
             )
+            raise RuntimeError(msg)
 
         get_job_response = self._request(get_job_request, None)
         job = get_job_response.json()
@@ -106,7 +110,8 @@ class UsersStream(Auth0Stream):
             summary: dict[str, int] = job["summary"]
             summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
 
-            raise RuntimeError(f"Job '{id_}' failed ({summary_format})")
+            msg = f"Job '{id_}' failed ({summary_format})"
+            raise RuntimeError(msg)
 
         time.sleep(job_poll_interval_ms / 1000)
         return self._poll_job(get_job_request, count=count + 1)
@@ -117,8 +122,8 @@ class ClientsStream(Auth0Stream):
 
     name = "stream_auth0_clients"
     path = "/clients"
-    primary_keys = ["client_id"]
-    schema = ClientObject.schema
+    primary_keys = ("client_id",)
+    schema = ClientObject.to_dict()
 
 
 class LogsStream(Auth0Stream):
@@ -126,15 +131,13 @@ class LogsStream(Auth0Stream):
 
     name = "stream_auth0_logs"
     path = "/logs"
-    primary_keys = ["log_id"]
+    primary_keys = ("log_id",)
     replication_key = "log_id"
-    schema = LogObject.schema
-
+    schema = LogObject.to_dict()
     log_expired = False
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
+    @override
+    def get_url_params(self, context, next_page_token):
         params = super().get_url_params(context, next_page_token)
 
         if params:
@@ -142,8 +145,9 @@ class LogsStream(Auth0Stream):
 
         context_state = self.get_context_state(context)
         last_log_id = next_page_token or context_state.get("replication_key_value")
+        log_expired = last_log_id is True
 
-        if last_log_id:
+        if last_log_id and not log_expired:
             params["from"] = last_log_id
             params["take"] = 100
 
@@ -153,35 +157,36 @@ class LogsStream(Auth0Stream):
 
         return params
 
-    def get_next_page_token(self, response: requests.Response, *args, **kwargs) -> Any:
-        if self.log_expired:
-            return True
+    @override
+    def get_new_paginator(self):
+        return LogsPaginator()
 
-        next_page_token = super().get_next_page_token(response, *args, **kwargs)
-        if next_page_token:
-            return next_page_token
+    @override
+    def validate_response(self, response):
+        if response.status_code == HTTPStatus.BAD_REQUEST:
+            return
 
-        return next(iter(extract_jsonpath("$[*].log_id", response.json())), None)
+        super().validate_response(response)
 
-    def validate_response(self, response: requests.Response) -> None:
-        self.log_expired = response.status_code == 400
-        return None if self.log_expired else super().validate_response(response)
+    @override
+    def parse_response(self, response):
+        if response.status_code == HTTPStatus.BAD_REQUEST:
+            return []
 
-    def parse_response(self, response: requests.Response) -> Iterable[dict]:
-        return [] if self.log_expired else super().parse_response(response)
+        return super().parse_response(response)
 
-    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+    @override
+    def post_process(self, row, context=None):
         row = super().post_process(row, context)
-        scope = row.get("scope")
-        if isinstance(scope, str):
-            row.update({ "scope": scope.split() })
+        if isinstance(scope := row.get("scope"), str):
+            row.update({"scope": scope.split()})
         details_error = row.get("details", {}).get("error")
         if isinstance(details_error, str):
             if details_error == "":
-                row["details"].update({ "error": None })
+                row["details"].update({"error": None})
             else:
-                row["details"].update({ "error": {"message": details_error} })
+                row["details"].update({"error": {"message": details_error}})
         response_body = row.get("response", {}).get("body")
         if isinstance(response_body, dict):
-            row["response"].update({ "body": [response_body] })
+            row["response"].update({"body": [response_body]})
         return row

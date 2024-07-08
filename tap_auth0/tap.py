@@ -1,9 +1,8 @@
 """Auth0 tap class."""
 
-from typing import List
-
-from singer_sdk import Stream, Tap
-from singer_sdk import typing as th  # JSON schema typing helpers
+from singer_sdk import Tap
+from singer_sdk import typing as th
+from typing_extensions import override
 
 from tap_auth0 import streams
 
@@ -52,6 +51,10 @@ class TapAuth0(Tap):
         ),
     ).to_dict()
 
-    def discover_streams(self) -> List[Stream]:
-        """Return a list of discovered streams."""
+    @override
+    def discover_streams(self):
         return [stream_class(tap=self) for stream_class in STREAM_TYPES]
+
+
+if __name__ == "__main__":
+    TapAuth0.cli()

@@ -1,10 +1,13 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for location info objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class ContinentCodeType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class ContinentCodeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

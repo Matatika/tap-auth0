@@ -1,10 +1,13 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for refresh token objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class RotationTypeType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class RotationTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -14,9 +17,10 @@ class RotationTypeType(StringType):
         }
 
 
-class ExpirationTypeType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class ExpirationTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

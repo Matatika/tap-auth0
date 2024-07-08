@@ -1,12 +1,14 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for log objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class LogTypeType(StringType):
-    """https://auth0.com/docs/deploy-monitor/logs/log-event-type-codes"""
-
-    @classproperty
-    def type_dict(cls) -> dict:
+# https://auth0.com/docs/deploy-monitor/logs/log-event-type-codes
+class LogTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

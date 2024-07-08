@@ -1,40 +1,44 @@
 """REST client handling, including Auth0Stream base class."""
 
-from typing import Any, Dict, Optional
-from urllib.parse import parse_qsl, urlsplit
+from __future__ import annotations
 
-import requests
-from memoization import cached
+from functools import cached_property
+from urllib.parse import ParseResult, parse_qsl
+
 from singer_sdk.streams import RESTStream
+from typing_extensions import override
 
 from tap_auth0.auth import Auth0Authenticator
+from tap_auth0.pagination import Auth0Paginator
 
 
 class Auth0Stream(RESTStream):
     """Auth0 stream class."""
 
     @property
-    def url_base(self) -> str:
-        """Return the API URL root, configurable via tap settings."""
+    @override
+    def url_base(self):
         domain = self.config["domain"]
         return f"https://{domain}/api/v2"
 
-    @property
-    @cached
-    def authenticator(self) -> Auth0Authenticator:
-        """Return a new authenticator object."""
+    @cached_property
+    @override
+    def authenticator(self):
         return Auth0Authenticator.create_for_stream(self)
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return dict(parse_qsl(urlsplit(next_page_token).query))
+    @override
+    def get_url_params(self, context, next_page_token):
+        params = super().get_url_params(context, next_page_token)
 
-    def get_next_page_token(
-        self, response: requests.Response, previous_token: Optional[Any]
-    ) -> Any:
-        next_link = response.links.get("next")
-        if not next_link or not response.json():
-            return None
+        if isinstance(next_page_token, ParseResult):
+            return dict(parse_qsl(next_page_token.query))
 
-        return next_link["url"]
+        return params
+
+    @override
+    def get_new_paginator(self):
+        return Auth0Paginator()
+
+    @override
+    def backoff_max_tries(self):
+        return 8

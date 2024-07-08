@@ -4,6 +4,11 @@
 
 Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
+[![Python version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMatatika%2Ftap-auth0%2Fmaster%2Fpyproject.toml&query=tool.poetry.dependencies.python&label=python)](https://docs.python.org/3/)
+[![Singer SDK version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FMatatika%2Ftap-auth0%2Fmaster%2Fpoetry.lock&query=package%5B%3F(%40.name%3D%3D'singer-sdk')%5D.version&label=singer-sdk)](https://sdk.meltano.com/en/latest/)
+[![License](https://img.shields.io/github/license/Matatika/tap-auth0)](https://github.com/Matatika/tap-auth0/blob/main/LICENSE)
+[![Code style](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fastral-sh%2Fruff%2Fmain%2Fassets%2Fbadge%2Fformat.json)](https://docs.astral.sh/ruff/)
+
 ## Overview
 
 `tap-auth0` extracts raw data from the [Auth0 Management API](https://auth0.com/docs/api/management/v2) for the following resources:
@@ -81,7 +86,23 @@ tap-auth0 --config CONFIG --discover > ./catalog.json
 
 ```bash
 pipx install poetry
-poetry install
+make init
+```
+
+### Lint your Code
+
+Identify lint issues by running:
+
+```bash
+make lint
+```
+
+> If `make init` has been run, this command will execute automatically before a commit
+
+You can also fix lint issues automatically with:
+
+```bash
+make lint-fix
 ```
 
 ### Create and Run Tests
@@ -90,7 +111,7 @@ Create tests within the `tap_auth0/tests` subfolder and
   then run:
 
 ```bash
-poetry run pytest
+make test
 ```
 
 You can also test the `tap-auth0` CLI interface directly using `poetry run`:
@@ -128,5 +149,5 @@ meltano elt tap-auth0 target-jsonl
 
 ### SDK Dev Guide
 
-See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the SDK to 
+See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the SDK to
 develop your own taps and targets.

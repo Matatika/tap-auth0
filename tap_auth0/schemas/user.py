@@ -1,53 +1,40 @@
-from singer_sdk.typing import (
-    ArrayType,
-    BooleanType,
-    DateTimeType,
-    EmailType,
-    IntegerType,
-    ObjectType,
-    PropertiesList,
-    Property,
-    StringType,
-    URIType,
-)
+"""Schema definitions for user objects."""
 
-from tap_auth0.schemas import CustomObject
+from singer_sdk import typing as th
+
 from tap_auth0.types import IPType
 
-
-class _IdentityObject(CustomObject):
-    properties = PropertiesList(
-        Property("connection", StringType),
-        Property("user_id", StringType),
-        Property("provider", StringType),
-        Property("isSocial", BooleanType),
-        Property("profileData", ObjectType()),
-    )
+_IdentityObject = th.PropertiesList(
+    th.Property("connection", th.StringType),
+    th.Property("user_id", th.StringType),
+    th.Property("provider", th.StringType),
+    th.Property("isSocial", th.BooleanType),
+    th.Property("profileData", th.ObjectType()),
+)
 
 
-class UserObject(CustomObject):
-    properties = PropertiesList(
-        Property("user_id", StringType),
-        Property("email", EmailType),
-        Property("email_verified", BooleanType),
-        Property("username", StringType),
-        Property("phone_number", StringType),
-        Property("phone_verified", BooleanType),
-        Property("created_at", DateTimeType),
-        Property("updated_at", DateTimeType),
-        Property("identities", ArrayType(_IdentityObject)),
-        Property("app_metadata", ObjectType()),
-        Property("user_metadata", ObjectType()),
-        Property("picture", URIType),
-        Property("name", StringType),
-        Property("nickname", StringType),
-        Property("multifactor", ArrayType(StringType)),
-        Property("last_ip", IPType),
-        Property("last_login", DateTimeType),
-        Property("logins_count", IntegerType),
-        Property("blocked", BooleanType),
-        Property("given_name", StringType),
-        Property("family_name", StringType),
-        Property("last_password_reset", DateTimeType),
-        Property("locale", StringType),
-    )
+UserObject = th.PropertiesList(
+    th.Property("user_id", th.StringType),
+    th.Property("email", th.EmailType),
+    th.Property("email_verified", th.BooleanType),
+    th.Property("username", th.StringType),
+    th.Property("phone_number", th.StringType),
+    th.Property("phone_verified", th.BooleanType),
+    th.Property("created_at", th.DateTimeType),
+    th.Property("updated_at", th.DateTimeType),
+    th.Property("identities", th.ArrayType(_IdentityObject)),
+    th.Property("app_metadata", th.ObjectType()),
+    th.Property("user_metadata", th.ObjectType()),
+    th.Property("picture", th.URIType),
+    th.Property("name", th.StringType),
+    th.Property("nickname", th.StringType),
+    th.Property("multifactor", th.ArrayType(th.StringType)),
+    th.Property("last_ip", IPType),
+    th.Property("last_login", th.DateTimeType),
+    th.Property("logins_count", th.IntegerType),
+    th.Property("blocked", th.BooleanType),
+    th.Property("given_name", th.StringType),
+    th.Property("family_name", th.StringType),
+    th.Property("last_password_reset", th.DateTimeType),
+    th.Property("locale", th.StringType),
+)

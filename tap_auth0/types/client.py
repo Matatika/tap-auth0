@@ -1,10 +1,13 @@
-from singer_sdk.helpers._classproperty import classproperty
-from singer_sdk.typing import StringType
+"""Type definitions for client objects."""
+
+import singer_sdk.typing as th
+from typing_extensions import override
 
 
-class AppTypeType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class AppTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -16,9 +19,10 @@ class AppTypeType(StringType):
         }
 
 
-class GrantTypeType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class GrantTypeType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -36,9 +40,10 @@ class GrantTypeType(StringType):
         }
 
 
-class TokenEndpointAuthMethodType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class TokenEndpointAuthMethodType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -49,9 +54,10 @@ class TokenEndpointAuthMethodType(StringType):
         }
 
 
-class OrganizationUsageType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class OrganizationUsageType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [
@@ -62,9 +68,10 @@ class OrganizationUsageType(StringType):
         }
 
 
-class OrganizationRequireBehaviourType(StringType):
-    @classproperty
-    def type_dict(cls) -> dict:
+class OrganizationRequireBehaviourType(th.StringType):
+    @th.DefaultInstanceProperty
+    @override
+    def type_dict(cls):
         return {
             **super().type_dict,
             "enum": [

@@ -1,4 +1,5 @@
-""" Utilities used in this module """
+"""Utilities used in this module"""
+
 from singer_sdk.helpers import _catalog
 from singer_sdk.helpers._singer import Catalog
 
@@ -54,7 +55,6 @@ def accumulate_singer_messages(message):
 
 
 def set_up_tap_with_custom_catalog(mock_config, stream_list):
-
     tap = TapAuth0(config=mock_config)
     # Run discovery
     tap.run_discovery()
