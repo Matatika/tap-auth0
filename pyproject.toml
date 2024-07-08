@@ -19,22 +19,22 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-license = "AGPL-3.0"
+license = "AGPL-3.0-only"
 packages = [
     { include = "tap_auth0" },
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-importlib-resources = { version = "==6.1.*", python = "<3.9" }
-singer-sdk = "^0.36.0"
+importlib-resources = { version = "==6.4.*", python = "<3.9" }
+singer-sdk = "^0.38.0"
 fs-s3fs = { version = "^1.1.1", optional = true }
-requests = "^2.31.0"
+requests = "^2.32.3"
 ndjson = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0.2"
-singer-sdk = { version="^0.36.0", extras = ["testing"] }
+pytest = "^8.2.2"
+singer-sdk = { version="^0.38.0", extras = ["testing"] }
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]
@@ -60,7 +60,7 @@ ignore = [
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
-"tap_auth0/{schemas,types}/**/*" = [
+"tap_auth0/types/**/*" = [
     "D101",   # undocumented-public-class
     "N805",   # invalid-first-argument-name-for-method
 ]
