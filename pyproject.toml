@@ -13,7 +13,6 @@ keywords = [
 classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -25,16 +24,15 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-importlib-resources = { version = "==6.4.*", python = "<3.9" }
-singer-sdk = "^0.41.0"
+python = "^3.9"
+singer-sdk = "^0.42.1"
 fs-s3fs = { version = "^1.1.1", optional = true }
 requests = "^2.32.3"
 ndjson = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
-singer-sdk = { version="^0.41.0", extras = ["testing"] }
+pytest = "^8.3.4"
+singer-sdk = { version="^0.42.1", extras = ["testing"] }
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]
@@ -45,13 +43,11 @@ warn_unused_configs = true
 
 [tool.ruff]
 src = ["tap_auth0"]
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 ignore = [
     "ANN001",  # missing-type-function-argument
-    "ANN101",  # missing-type-self
-    "ANN102",  # missing-type-cls
     "ANN201",  # missing-return-type-undocumented-public-function
     "ANN202",  # missing-return-type-private-function
     "COM812",  # missing-trailing-comma
