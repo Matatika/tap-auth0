@@ -13,7 +13,6 @@ keywords = [
 classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -25,8 +24,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-importlib-resources = { version = "==6.4.*", python = "<3.9" }
+python = "^3.9"
 singer-sdk = "^0.42.1"
 fs-s3fs = { version = "^1.1.1", optional = true }
 requests = "^2.32.3"
@@ -45,7 +43,7 @@ warn_unused_configs = true
 
 [tool.ruff]
 src = ["tap_auth0"]
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 ignore = [
