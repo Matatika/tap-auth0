@@ -2,21 +2,18 @@
 
 from singer_sdk import typing as th
 
-from tap_auth0.types.client import (
-    AppTypeType,
-    GrantTypeType,
-    OrganizationRequireBehaviourType,
-    OrganizationUsageType,
-    TokenEndpointAuthMethodType,
-)
-from tap_auth0.types.jwt_configuration import AlgType
-from tap_auth0.types.refresh_token import ExpirationTypeType, RotationTypeType
-
 _JWTConfigurationObject = th.PropertiesList(
     th.Property("lifetime_in_seconds", th.IntegerType),
     th.Property("secret_encoded", th.BooleanType),
     th.Property("scopes", th.ObjectType()),
-    th.Property("alg", AlgType),
+    th.Property(
+        "alg",
+        th.StringType,
+        allowed_values=[
+            "HS256",
+            "RS256",
+        ],
+    ),
 )
 
 
@@ -271,8 +268,22 @@ _NativeSocialLoginObject = th.PropertiesList(
 
 
 _RefreshTokenObject = th.PropertiesList(
-    th.Property("rotation_type", RotationTypeType),
-    th.Property("expiration_type", ExpirationTypeType),
+    th.Property(
+        "rotation_type",
+        th.StringType,
+        allowed_values=[
+            "rotating",
+            "non-rotating",
+        ],
+    ),
+    th.Property(
+        "expiration_type",
+        th.StringType,
+        allowed_values=[
+            "expiring",
+            "non-expiring",
+        ],
+    ),
     th.Property("leeway", th.IntegerType),
     th.Property("token_lifetime", th.IntegerType),
     th.Property("infinite_token_lifetime", th.BooleanType),
@@ -288,7 +299,16 @@ ClientObject = th.PropertiesList(
     th.Property("description", th.StringType),
     th.Property("global", th.BooleanType),
     th.Property("client_secret", th.StringType),
-    th.Property("app_type", AppTypeType),
+    th.Property(
+        "app_type",
+        th.StringType,
+        allowed_values=[
+            "spa",
+            "native",
+            "non_interactive",
+            "regular_web",
+        ],
+    ),
     th.Property("logo_uri", th.URIType),
     th.Property("is_first_party", th.BooleanType),
     th.Property("oidc_conformant", th.BooleanType),
@@ -298,7 +318,24 @@ ClientObject = th.PropertiesList(
     th.Property("client_aliases", th.ArrayType(th.StringType)),
     th.Property("allowed_clients", th.ArrayType(th.StringType)),
     th.Property("allowed_logout_urls", th.ArrayType(th.URIType)),
-    th.Property("grant_types", th.ArrayType(GrantTypeType)),
+    th.Property(
+        "grant_types",
+        th.ArrayType(
+            th.StringType,
+            allowed_values=[
+                "authorization_code",
+                "implicit",
+                "refresh_token",
+                "client_credentials",
+                "password",
+                "http://auth0.com/oauth/grant-type/password-realm",
+                "http://auth0.com/oauth/grant-type/mfa-oob",
+                "http://auth0.com/oauth/grant-type/mfa-otp",
+                "http://auth0.com/oauth/grant-type/mfa-recovery-code",
+                "urn:ietf:params:oauth:grant-type:device_code",
+            ],
+        ),
+    ),
     th.Property("jwt_configuration", _JWTConfigurationObject),
     th.Property("signing_keys", th.ArrayType(th.ObjectType())),
     th.Property("encryption_key", _EncryptionKeyObject),
@@ -311,14 +348,37 @@ ClientObject = th.PropertiesList(
     th.Property("custom_login_page_preview", th.StringType),
     th.Property("form_template", th.StringType),
     th.Property("addons", _AddonsObject),
-    th.Property("token_endpoint_auth_method", TokenEndpointAuthMethodType),
+    th.Property(
+        "token_endpoint_auth_method",
+        th.StringType,
+        allowed_values=[
+            "none",
+            "client_secret_post",
+            "client_secret_basic",
+        ],
+    ),
     th.Property("client_metadata", th.ObjectType()),
     th.Property("mobile", _MobileObject),
     th.Property("initiate_login_uri", th.URIType),
     th.Property("native_social_login", _NativeSocialLoginObject),
     th.Property("refresh_token", _RefreshTokenObject),
-    th.Property("organization_usage", OrganizationUsageType),
-    th.Property("organization_require_behavior", OrganizationRequireBehaviourType),
+    th.Property(
+        "organization_usage",
+        th.StringType,
+        allowed_values=[
+            "deny",
+            "allow",
+            "require",
+        ],
+    ),
+    th.Property(
+        "organization_require_behavior",
+        th.StringType,
+        allowed_values=[
+            "no_prompt",
+            "pre_login_prompt",
+        ],
+    ),
     th.Property("is_token_endpoint_ip_header_trusted", th.BooleanType),
     th.Property("callback_url_template", th.BooleanType),
     th.Property("owners", th.ArrayType(th.StringType)),
