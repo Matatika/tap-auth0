@@ -2,7 +2,7 @@
 
 from singer_sdk import typing as th
 
-from tap_auth0.types import IPType
+from tap_auth0.schemas import IPType
 
 _IdentityObject = th.PropertiesList(
     th.Property("connection", th.StringType),
