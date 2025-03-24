@@ -64,6 +64,10 @@ class UsersStream(Auth0Stream):
 
         export_users_job = self._poll_job(get_export_users_job_request)
         self.path = export_users_job["location"]
+
+        # necessary to prevent 400 Bad Request `Only one auth mechanism allowed` error
+        # when requesting data from a completed job `location`, where `X-Amz-Algorithm`
+        # is present in the URL
         self.authenticator = None
 
         return super().get_records(context)
