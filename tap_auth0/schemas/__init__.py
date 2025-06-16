@@ -2,4 +2,6 @@
 
 from singer_sdk import typing as th
 
-IPType = th.OneOf(th.IPv4Type, th.IPv6Type, th.CustomType({"type": ["null"]}))
+IPType = th.CustomType(
+    th.StringType().to_dict() | th.OneOf(th.IPv4Type, th.IPv6Type).to_dict()
+)
