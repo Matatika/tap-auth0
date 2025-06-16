@@ -332,6 +332,7 @@ ClientObject = th.PropertiesList(
                     "http://auth0.com/oauth/grant-type/mfa-oob",
                     "http://auth0.com/oauth/grant-type/mfa-otp",
                     "http://auth0.com/oauth/grant-type/mfa-recovery-code",
+                    "urn:openid:params:grant-type:ciba",
                     "urn:ietf:params:oauth:grant-type:device_code",
                 ],
             ),
