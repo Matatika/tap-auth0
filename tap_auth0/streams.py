@@ -8,8 +8,6 @@ import time
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-import ndjson
-from singer_sdk.helpers.jsonpath import extract_jsonpath
 from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
@@ -74,10 +72,7 @@ class UsersStream(Auth0Stream):
 
     @override
     def parse_response(self, response):
-        users = gzip.decompress(response.content)
-        users_ndjson = json.loads(users, cls=ndjson.Decoder)
-
-        yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
+        yield from map(json.loads, gzip.decompress(response.content).splitlines())
 
     def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
