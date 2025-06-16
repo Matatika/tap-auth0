@@ -2,8 +2,6 @@
 
 from singer_sdk import typing as th
 
-from tap_auth0.schemas import IPType
-
 _IdentityObject = th.PropertiesList(
     th.Property("connection", th.StringType),
     th.Property("user_id", th.StringType),
@@ -29,7 +27,7 @@ UserObject = th.PropertiesList(
     th.Property("name", th.StringType),
     th.Property("nickname", th.StringType),
     th.Property("multifactor", th.ArrayType(th.StringType)),
-    th.Property("last_ip", IPType),
+    th.Property("last_ip", th.IPv4Type),
     th.Property("last_login", th.DateTimeType),
     th.Property("logins_count", th.IntegerType),
     th.Property("blocked", th.BooleanType),

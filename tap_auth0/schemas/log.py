@@ -2,8 +2,6 @@
 
 from singer_sdk import typing as th
 
-from tap_auth0.schemas import IPType
-
 _LocationInfoObject = th.PropertiesList(
     th.Property("country_code", th.StringType),
     th.Property("country_code3", th.StringType),
@@ -201,7 +199,7 @@ LogObject = th.PropertiesList(
     th.Property("connection_id", th.StringType),
     th.Property("client_id", th.StringType),
     th.Property("client_name", th.StringType),
-    th.Property("ip", IPType),
+    th.Property("ip", th.IPv4Type),
     th.Property("hostname", th.StringType),
     th.Property("user_id", th.StringType),
     th.Property("user_name", th.StringType),
@@ -217,5 +215,5 @@ LogObject = th.PropertiesList(
     th.Property("auth0_client", _Auth0ClientObject),
     th.Property("_id", th.StringType),
     th.Property("session_connection", th.StringType),
-    th.Property("client_ip", IPType),
+    th.Property("client_ip", th.IPv4Type),
 )
