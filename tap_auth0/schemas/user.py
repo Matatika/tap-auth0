@@ -27,7 +27,7 @@ UserObject = th.PropertiesList(
     th.Property("name", th.StringType),
     th.Property("nickname", th.StringType),
     th.Property("multifactor", th.ArrayType(th.StringType)),
-    th.Property("last_ip", th.IPv4Type),
+    th.Property("last_ip", th.StringType),
     th.Property("last_login", th.DateTimeType),
     th.Property("logins_count", th.IntegerType),
     th.Property("blocked", th.BooleanType),

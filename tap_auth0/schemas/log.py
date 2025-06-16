@@ -199,7 +199,7 @@ LogObject = th.PropertiesList(
     th.Property("connection_id", th.StringType),
     th.Property("client_id", th.StringType),
     th.Property("client_name", th.StringType),
-    th.Property("ip", th.IPv4Type),
+    th.Property("ip", th.StringType),
     th.Property("hostname", th.StringType),
     th.Property("user_id", th.StringType),
     th.Property("user_name", th.StringType),
@@ -215,5 +215,5 @@ LogObject = th.PropertiesList(
     th.Property("auth0_client", _Auth0ClientObject),
     th.Property("_id", th.StringType),
     th.Property("session_connection", th.StringType),
-    th.Property("client_ip", th.IPv4Type),
+    th.Property("client_ip", th.StringType),
 )
