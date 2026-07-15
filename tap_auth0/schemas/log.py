@@ -7,8 +7,8 @@ _LocationInfoObject = th.PropertiesList(
     th.Property("country_code3", th.StringType),
     th.Property("country_name", th.StringType),
     th.Property("city_name", th.StringType),
-    th.Property("latitude", th.StringType),
-    th.Property("longitude", th.StringType),
+    th.Property("latitude", th.NumberType),
+    th.Property("longitude", th.NumberType),
     th.Property("time_zone", th.StringType),
     th.Property(
         "continent_code",
