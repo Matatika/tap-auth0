@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """REST client handling, including Auth0Stream base class."""
 
 from __future__ import annotations

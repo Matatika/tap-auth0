@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """Utilities used in this module"""
 
 from singer_sdk.helpers import _catalog

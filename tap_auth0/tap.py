@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """Auth0 tap class."""
 
 from singer_sdk import Tap
