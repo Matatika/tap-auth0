@@ -1,4 +1,7 @@
-"""Auth0 Authentication."""
+"""Auth0 Authentication.
+
+Copyright (c) 2026 Meltano.
+"""
 
 from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta
 from typing_extensions import Self, override
