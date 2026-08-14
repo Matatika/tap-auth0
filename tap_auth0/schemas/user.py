@@ -1,4 +1,7 @@
-"""Schema definitions for user objects."""
+"""Schema definitions for user objects.
+
+Copyright (c) 2026 Meltano.
+"""
 
 from singer_sdk import typing as th
 
