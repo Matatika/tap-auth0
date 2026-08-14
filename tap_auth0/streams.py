@@ -1,7 +1,4 @@
-"""Stream type classes for tap-auth0.
-
-Copyright (c) 2026 Meltano.
-"""
+"""Stream type classes for tap-auth0."""
 
 from __future__ import annotations
 

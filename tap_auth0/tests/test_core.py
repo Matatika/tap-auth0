@@ -1,7 +1,4 @@
-"""Tests standard tap features using the built-in SDK tests library.
-
-Copyright (c) 2026 Meltano.
-"""
+"""Tests standard tap features using the built-in SDK tests library."""
 
 import datetime
 

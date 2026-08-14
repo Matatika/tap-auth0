@@ -1,7 +1,4 @@
-"""Tests the tap using a mock base credentials config.
-
-Copyright (c) 2026 Meltano.
-"""
+"""Tests the tap using a mock base credentials config."""
 
 import gzip
 import json
