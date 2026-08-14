@@ -1,7 +1,6 @@
-"""Utilities used in this module
+# Copyright (c) 2026 Meltano.
 
-Copyright (c) 2026 Meltano.
-"""
+"""Utilities used in this module"""
 
 from singer_sdk.helpers import _catalog
 from singer_sdk.helpers._singer import Catalog

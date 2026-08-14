@@ -1,7 +1,6 @@
-"""Pagination classes for tap-auth0.
+# Copyright (c) 2026 Meltano.
 
-Copyright (c) 2026 Meltano.
-"""
+"""Pagination classes for tap-auth0."""
 
 from http import HTTPStatus
 

@@ -1,7 +1,6 @@
-"""Auth0 tap class.
+# Copyright (c) 2026 Meltano.
 
-Copyright (c) 2026 Meltano.
-"""
+"""Auth0 tap class."""
 
 from singer_sdk import Tap
 from singer_sdk import typing as th

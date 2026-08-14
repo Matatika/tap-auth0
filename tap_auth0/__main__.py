@@ -1,7 +1,6 @@
-"""Auth0 entry point.
+# Copyright (c) 2026 Meltano.
 
-Copyright (c) 2026 Meltano.
-"""
+"""Auth0 entry point."""
 
 from __future__ import annotations
 
