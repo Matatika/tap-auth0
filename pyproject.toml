@@ -59,6 +59,10 @@ select = ["ALL"]
     "D101",   # undocumented-public-class
     "N805",   # invalid-first-argument-name-for-method
 ]
+"tap_auth0/tests/**/*" = [
+    "S101",     # assert
+    "PLR2004",  # magic-value-comparison
+]
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
