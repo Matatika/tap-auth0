@@ -7,6 +7,7 @@ import json
 import unittest
 
 import ndjson
+import pytest
 import responses
 import singer
 
@@ -15,9 +16,10 @@ from tap_auth0.tap import TapAuth0
 
 
 class TestTapAuth0Sync(unittest.TestCase):
-    """Test class for tap-auth0 using base credentials"""
+    """Test class for tap-auth0 using base credentials."""
 
     def setUp(self):
+        """Set up the mock config and reset the captured messages."""
         self.mock_config = {
             "client_id": "1234",
             "client_secret": "1234",
@@ -29,17 +31,15 @@ class TestTapAuth0Sync(unittest.TestCase):
         singer.write_message = test_utils.accumulate_singer_messages
 
     def test_base_credentials_discovery(self):
-        """Test basic discover sync"""
-
+        """Test basic discover sync."""
         catalog = TapAuth0(self.mock_config).discover_streams()
 
         # expect valid catalog to be discovered
-        self.assertEqual(len(catalog), 3, "Total streams from default catalog")
+        assert len(catalog) == 3, "Total streams from default catalog"
 
     @responses.activate
     def test_auth0_sync_users(self):
         """Test sync users."""
-
         tap = test_utils.set_up_tap_with_custom_catalog(
             self.mock_config, ["stream_auth0_users"]
         )
@@ -87,15 +87,14 @@ class TestTapAuth0Sync(unittest.TestCase):
 
         tap.sync_all()
 
-        self.assertEqual(len(test_utils.SINGER_MESSAGES), 3)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
+        assert len(test_utils.SINGER_MESSAGES) == 3
+        assert isinstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
 
     @responses.activate
     def test_auth0_sync_users_failed(self):
-        """Test sync users with failed job"""
-
+        """Test sync users with failed job."""
         tap = test_utils.set_up_tap_with_custom_catalog(
             self.mock_config, ["stream_auth0_users"]
         )
@@ -132,18 +131,17 @@ class TestTapAuth0Sync(unittest.TestCase):
             json=job,
         )
 
-        with self.assertRaises(RuntimeError) as err:
+        with pytest.raises(RuntimeError) as err:
             tap.sync_all()
 
-        self.assertIn(f"Job '{job_id}' failed", str(err.exception))
+        assert f"Job '{job_id}' failed" in str(err.value)
 
-        self.assertEqual(len(test_utils.SINGER_MESSAGES), 1)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
+        assert len(test_utils.SINGER_MESSAGES) == 1
+        assert isinstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
 
     @responses.activate
     def test_auth0_sync_clients(self):
         """Test sync clients."""
-
         tap = test_utils.set_up_tap_with_custom_catalog(
             self.mock_config, ["stream_auth0_clients"]
         )
@@ -164,15 +162,14 @@ class TestTapAuth0Sync(unittest.TestCase):
 
         tap.sync_all()
 
-        self.assertEqual(len(test_utils.SINGER_MESSAGES), 3)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
+        assert len(test_utils.SINGER_MESSAGES) == 3
+        assert isinstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
 
     @responses.activate
     def test_auth0_sync_logs(self):
         """Test sync logs."""
-
         tap = test_utils.set_up_tap_with_custom_catalog(
             self.mock_config, ["stream_auth0_logs"]
         )
@@ -200,13 +197,13 @@ class TestTapAuth0Sync(unittest.TestCase):
 
         tap.sync_all()
 
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
-        self.assertIsInstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[0], singer.SchemaMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[1], singer.RecordMessage)
+        assert isinstance(test_utils.SINGER_MESSAGES[2], singer.StateMessage)
 
         # Assert that the log_id is used as the last state
         replication_key_value = test_utils.SINGER_MESSAGES[2].asdict()
         replication_key_value = replication_key_value["value"]["bookmarks"][
             "stream_auth0_logs"
         ]["replication_key_value"]
-        self.assertEqual("log_id_12345", replication_key_value)
+        assert replication_key_value == "log_id_12345"

@@ -9,8 +9,7 @@ from singer_sdk.testing import get_standard_tap_tests
 from tap_auth0.tap import TapAuth0
 
 SAMPLE_CONFIG = {
-    "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-    # TODO: Initialize minimal tap config
+    "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
 }
 
 
@@ -20,6 +19,3 @@ def test_standard_tap_tests():
     tests = get_standard_tap_tests(TapAuth0, config=SAMPLE_CONFIG)
     for test in tests:
         test()
-
-
-# TODO: Create additional tests as appropriate for your tap.
