@@ -3,13 +3,20 @@
 """Test utilities."""
 
 from singer_sdk.helpers import _catalog
-from singer_sdk.helpers._singer import Catalog
+from singer_sdk.singerlib.catalog import Catalog
 
 from tap_auth0.tap import TapAuth0
 
-SINGER_MESSAGES = []
+MOCK_CONFIG = {
+    "client_id": "1234",
+    "client_secret": "1234",
+    "domain": "test.auth0.com",
+}
 
 users_data = [{"user_id": "user_id_12345"}]
+
+clients_data = [{"client_id": "client_id_12345"}]
+logs_data = [{"log_id": "log_id_12345"}]
 
 
 def users_export_job_pending(job_id: str):
@@ -49,15 +56,6 @@ def users_export_job_failed(job_id: str):
             "total": len(users_data),
         },
     }
-
-
-clients_data = {"start": 0, "total": 100, "clients": [{"client_id": "client_id_12345"}]}
-logs_data = [{"log_id": "log_id_12345"}]
-
-
-def accumulate_singer_messages(message):
-    """Collect a singer message written during a test."""
-    SINGER_MESSAGES.append(message)
 
 
 def set_up_tap_with_custom_catalog(mock_config, stream_list):
