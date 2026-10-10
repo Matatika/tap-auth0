@@ -1,0 +1,36 @@
+### A CI workflow that runs the tests with pytest.
+### The tests mock the Auth0 API, so no secrets are required.
+
+name: Test tap-auth0
+
+on:
+  push:
+    branches: [master]
+    paths-ignore: [README.md]
+
+  pull_request:
+    paths-ignore: [README.md]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+    - uses: actions/checkout@v7
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Poetry
+      run: |
+        pip install poetry
+    - name: Install dependencies
+      run: |
+        poetry env use ${{ matrix.python-version }}
+        poetry install
+    - name: Test with pytest
+      run: |
+        poetry run pytest
