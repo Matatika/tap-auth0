@@ -2,14 +2,14 @@
 
 """Tests standard tap features using the built-in SDK tests library."""
 
-import datetime
+import datetime as dt
 
 from singer_sdk.testing import get_standard_tap_tests
 
 from tap_auth0.tap import TapAuth0
 
 SAMPLE_CONFIG = {
-    "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+    "start_date": dt.datetime.now(dt.timezone.utc).date().isoformat(),
 }
 
 
