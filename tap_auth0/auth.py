@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """Auth0 Authentication."""
 
 from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta

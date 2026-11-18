@@ -25,14 +25,14 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-singer-sdk = "^0.42.1"
+singer-sdk = "^0.48.1"
 fs-s3fs = { version = "^1.1.1", optional = true }
-requests = "^2.32.3"
-ndjson = "^0.3.1"
+requests = "^2.32.5"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.4"
-singer-sdk = { version="^0.42.1", extras = ["testing"] }
+pytest = "^8.4.2"
+singer-sdk = { version="^0.48.1", extras = ["testing"] }
+responses = "^0.26.3"
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]
@@ -59,6 +59,10 @@ select = ["ALL"]
 "tap_auth0/types/**/*" = [
     "D101",   # undocumented-public-class
     "N805",   # invalid-first-argument-name-for-method
+]
+"tap_auth0/tests/**/*" = [
+    "S101",     # assert
+    "PLR2004",  # magic-value-comparison
 ]
 
 [tool.ruff.flake8-annotations]

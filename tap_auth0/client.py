@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """REST client handling, including Auth0Stream base class."""
 
 from __future__ import annotations
@@ -5,6 +7,7 @@ from __future__ import annotations
 from functools import cached_property
 from urllib.parse import ParseResult, parse_qsl
 
+from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 from typing_extensions import override
 
@@ -38,6 +41,22 @@ class Auth0Stream(RESTStream):
     @override
     def get_new_paginator(self):
         return Auth0Paginator()
+
+    @override
+    def backoff_wait_generator(self):
+        expo = super().backoff_wait_generator()
+        next(expo)
+        exception = yield
+
+        while True:
+            if (
+                isinstance(exception, RetriableAPIError)
+                and exception.response is not None
+                and "Retry-After" in exception.response.headers
+            ):
+                exception = yield float(exception.response.headers["Retry-After"])
+            else:
+                exception = yield next(expo)
 
     @override
     def backoff_max_tries(self):

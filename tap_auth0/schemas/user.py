@@ -1,8 +1,8 @@
+# Copyright (c) 2026 Meltano.
+
 """Schema definitions for user objects."""
 
 from singer_sdk import typing as th
-
-from tap_auth0.types import IPType
 
 _IdentityObject = th.PropertiesList(
     th.Property("connection", th.StringType),
@@ -29,7 +29,7 @@ UserObject = th.PropertiesList(
     th.Property("name", th.StringType),
     th.Property("nickname", th.StringType),
     th.Property("multifactor", th.ArrayType(th.StringType)),
-    th.Property("last_ip", IPType),
+    th.Property("last_ip", th.StringType),
     th.Property("last_login", th.DateTimeType),
     th.Property("logins_count", th.IntegerType),
     th.Property("blocked", th.BooleanType),

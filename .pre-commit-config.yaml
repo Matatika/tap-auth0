@@ -1,11 +1,11 @@
 ci:
   autofix_prs: true
-  autoupdate_schedule: weekly
+  autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore: pre-commit autoupdate'
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-json
     exclude: |
@@ -18,21 +18,28 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.31.0
+  rev: 0.39.0
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
 
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.9.2
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.6
   hooks:
-  - id: ruff
-    args: [--fix, --exit-non-zero-on-fix, --show-fixes]
-    exclude: tests/
+  - id: insert-license
+    files: \.py$
+    args:
+    - --license-filepath=license_header.txt
+    - --use-current-year
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.17.3
+  hooks:
+  - id: ruff-check
   - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.14.1
+  rev: v2.4.1
   hooks:
   - id: mypy
     additional_dependencies:

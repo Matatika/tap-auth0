@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Meltano.
+
 """Stream type classes for tap-auth0."""
 
 from __future__ import annotations
@@ -6,10 +8,8 @@ import gzip
 import json
 import time
 from http import HTTPStatus
+from typing import TYPE_CHECKING
 
-import ndjson
-import requests
-from singer_sdk.helpers.jsonpath import extract_jsonpath
 from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
@@ -17,6 +17,9 @@ from tap_auth0.pagination import LogsPaginator
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
+
+if TYPE_CHECKING:
+    import requests
 
 
 class UsersStream(Auth0Stream):
@@ -27,11 +30,6 @@ class UsersStream(Auth0Stream):
     schema = UserObject.to_dict()
     url_base = ""
 
-    @property
-    @override
-    def authenticator(self):
-        return None
-
     # since Auth0 restricts the total number of users returned from the get users
     # endpoint to 1000 (including paging), we need to create a user export job in order
     # to bypass this limitation
@@ -39,51 +37,46 @@ class UsersStream(Auth0Stream):
     # https://auth0.com/docs/manage-users/user-search/retrieve-users-with-get-users-endpoint#limitations
     @override
     def get_records(self, context):
-        authenticator = super().authenticator
         url_base = super().url_base
-
-        session = requests.Session()
-        session.headers = authenticator.auth_headers
-        session.params = authenticator.auth_params
 
         # create export users job
         # https://auth0.com/docs/api/management/v2#!/Jobs/post_users_exports
         self.path = "/jobs/users-exports"
-        create_export_users_job_request = session.prepare_request(
-            requests.Request(
-                "POST",
-                url_base + self.path,
-                json={
-                    "format": "json",
-                    "fields": [{"name": name} for name in self.schema["properties"]],
-                },
-            )
+        create_export_users_job_request = self.build_prepared_request(
+            "POST",
+            url_base + self.path,
+            json={
+                "format": "json",
+                "fields": [{"name": name} for name in self.schema["properties"]],
+            },
         )
 
-        export_users_job = self._request(create_export_users_job_request, None)
+        export_users_job = self.request_decorator(self._request)(
+            create_export_users_job_request, None
+        )
         job_id = export_users_job.json()["id"]
 
         # poll export users job
         # https://auth0.com/docs/api/management/v2#!/Jobs/get_jobs_by_id
         self.path = f"/jobs/{job_id}"
-        get_export_users_job_request = session.prepare_request(
-            requests.Request(
-                "GET",
-                url_base + self.path,
-            ),
+        get_export_users_job_request = self.build_prepared_request(
+            "GET",
+            url_base + self.path,
         )
 
         export_users_job = self._poll_job(get_export_users_job_request)
         self.path = export_users_job["location"]
 
+        # necessary to prevent 400 Bad Request `Only one auth mechanism allowed` error
+        # when requesting data from a completed job `location`, where `X-Amz-Algorithm`
+        # is present in the URL
+        self.authenticator = None
+
         return super().get_records(context)
 
     @override
     def parse_response(self, response):
-        users = gzip.decompress(response.content)
-        users_ndjson = json.loads(users, cls=ndjson.Decoder)
-
-        yield from extract_jsonpath(self.records_jsonpath, users_ndjson)
+        yield from map(json.loads, gzip.decompress(response.content).splitlines())
 
     def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
         job_poll_interval_ms: int = self.config["job_poll_interval_ms"]
@@ -97,7 +90,7 @@ class UsersStream(Auth0Stream):
             )
             raise RuntimeError(msg)
 
-        get_job_response = self._request(get_job_request, None)
+        get_job_response = self.request_decorator(self._request)(get_job_request, None)
         job = get_job_response.json()
 
         status = job["status"]
