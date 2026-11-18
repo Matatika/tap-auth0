@@ -48,7 +48,7 @@ def test_users_sync_retries_rate_limited_job_poll(capsys):
 
 @responses.activate
 def test_users_job_poll_waits_for_time_left_seconds():
-    """A processing job is polled again after its `time_left_seconds`."""
+    """A `processing` job is polled again after its `time_left_seconds`."""
     job_url = "https://test.auth0.com/api/v2/jobs/job_1"
     responses.post(
         "https://test.auth0.com/oauth/token",
