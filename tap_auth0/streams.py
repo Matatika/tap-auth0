@@ -174,6 +174,6 @@ class LogsStream(Auth0Stream):
     @override
     def post_process(self, row, context=None):
         row = super().post_process(row, context)
-        if isinstance(scope := row.get("scope"), str):
-            row.update({"scope": scope.split()})
+        if isinstance(scope := row.get("scope"), str):  # ty: ignore[missing-union-attribute]
+            row.update({"scope": scope.split()})  # ty: ignore[missing-union-attribute]
         return row
