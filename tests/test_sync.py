@@ -11,7 +11,7 @@ import pytest
 import responses
 import singer
 
-import tap_auth0.tests.utils as test_utils
+import tests.utils as test_utils
 from tap_auth0.tap import TapAuth0
 
 
@@ -40,9 +40,7 @@ class TestTapAuth0Sync(unittest.TestCase):
     @responses.activate
     def test_auth0_sync_users(self):
         """Test sync users."""
-        tap = test_utils.set_up_tap_with_custom_catalog(
-            self.mock_config, ["stream_auth0_users"]
-        )
+        tap = test_utils.set_up_tap_with_custom_catalog(self.mock_config, ["stream_auth0_users"])
 
         responses.add(
             responses.POST,
@@ -80,9 +78,7 @@ class TestTapAuth0Sync(unittest.TestCase):
             responses.GET,
             job["location"],
             status=200,
-            body=gzip.compress(
-                json.dumps(test_utils.users_data, cls=ndjson.Encoder).encode()
-            ),
+            body=gzip.compress(json.dumps(test_utils.users_data, cls=ndjson.Encoder).encode()),
         )
 
         tap.sync_all()
@@ -95,9 +91,7 @@ class TestTapAuth0Sync(unittest.TestCase):
     @responses.activate
     def test_auth0_sync_users_failed(self):
         """Test sync users with failed job."""
-        tap = test_utils.set_up_tap_with_custom_catalog(
-            self.mock_config, ["stream_auth0_users"]
-        )
+        tap = test_utils.set_up_tap_with_custom_catalog(self.mock_config, ["stream_auth0_users"])
 
         responses.add(
             responses.POST,
@@ -142,9 +136,7 @@ class TestTapAuth0Sync(unittest.TestCase):
     @responses.activate
     def test_auth0_sync_clients(self):
         """Test sync clients."""
-        tap = test_utils.set_up_tap_with_custom_catalog(
-            self.mock_config, ["stream_auth0_clients"]
-        )
+        tap = test_utils.set_up_tap_with_custom_catalog(self.mock_config, ["stream_auth0_clients"])
 
         responses.add(
             responses.POST,
@@ -170,9 +162,7 @@ class TestTapAuth0Sync(unittest.TestCase):
     @responses.activate
     def test_auth0_sync_logs(self):
         """Test sync logs."""
-        tap = test_utils.set_up_tap_with_custom_catalog(
-            self.mock_config, ["stream_auth0_logs"]
-        )
+        tap = test_utils.set_up_tap_with_custom_catalog(self.mock_config, ["stream_auth0_logs"])
 
         responses.add(
             responses.POST,
@@ -203,7 +193,7 @@ class TestTapAuth0Sync(unittest.TestCase):
 
         # Assert that the log_id is used as the last state
         replication_key_value = test_utils.SINGER_MESSAGES[2].asdict()
-        replication_key_value = replication_key_value["value"]["bookmarks"][
-            "stream_auth0_logs"
-        ]["replication_key_value"]
+        replication_key_value = replication_key_value["value"]["bookmarks"]["stream_auth0_logs"][
+            "replication_key_value"
+        ]
         assert replication_key_value == "log_id_12345"
