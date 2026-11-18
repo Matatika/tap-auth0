@@ -6,18 +6,23 @@ from __future__ import annotations
 
 import gzip
 import json
+import sys
 import time
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from singer_sdk.authenticators import SimpleAuthenticator
-from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
 from tap_auth0.pagination import LogsPaginator
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     import requests

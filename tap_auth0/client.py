@@ -4,15 +4,20 @@
 
 from __future__ import annotations
 
+import sys
 from functools import cached_property
 from urllib.parse import ParseResult, parse_qsl
 
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
-from typing_extensions import override
 
 from tap_auth0.auth import Auth0Authenticator
 from tap_auth0.pagination import Auth0Paginator
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 
 class Auth0Stream(RESTStream):

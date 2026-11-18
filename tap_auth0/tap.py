@@ -2,11 +2,17 @@
 
 """Auth0 tap class."""
 
+import sys
+
 from singer_sdk import Tap
 from singer_sdk import typing as th
-from typing_extensions import override
 
 from tap_auth0 import streams
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 STREAM_TYPES = [
     streams.UsersStream,

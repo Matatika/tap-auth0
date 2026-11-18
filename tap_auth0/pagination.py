@@ -2,10 +2,15 @@
 
 """Pagination classes for tap-auth0."""
 
+import sys
 from http import HTTPStatus
 
 from singer_sdk.pagination import HeaderLinkPaginator, JSONPathPaginator
-from typing_extensions import override
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 
 class Auth0Paginator(HeaderLinkPaginator):
