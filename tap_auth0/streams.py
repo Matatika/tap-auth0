@@ -84,38 +84,37 @@ class UsersStream(Auth0Stream):
     def parse_response(self, response):
         yield from map(json.loads, gzip.decompress(response.content).splitlines())
 
-    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
+    def _poll_job(self, get_job_request: requests.PreparedRequest):
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
         job_poll_max_count = self.config["job_poll_max_count"]
 
-        if count > job_poll_max_count:
-            msg = (
-                f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
-                f"least {job_poll_interval_ms} ms apart). `job_poll_interval_ms` and "
-                "`job_poll_max_count` may need adjusting."
-            )
-            raise RuntimeError(msg)
+        for _ in range(job_poll_max_count):
+            get_job_response = self.request_decorator(self._request)(get_job_request, None)
+            job = get_job_response.json()
 
-        get_job_response = self.request_decorator(self._request)(get_job_request, None)
-        job = get_job_response.json()
+            status = job["status"]
 
-        status = job["status"]
+            if status == "completed":
+                return job
 
-        if status == "completed":
-            return job
+            if status == "failed":
+                id_ = job["id"]
+                summary: dict[str, int] = job["summary"]
+                summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
 
-        if status == "failed":
-            id_ = job["id"]
-            summary: dict[str, int] = job["summary"]
-            summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
+                msg = f"Job '{id_}' failed ({summary_format})"
+                raise RuntimeError(msg)
 
-            msg = f"Job '{id_}' failed ({summary_format})"
-            raise RuntimeError(msg)
+            wait_s = max(job.get("time_left_seconds", 0), job_poll_interval_ms / 1000)
+            self.logger.info("Waiting %.1fs for export job to complete", wait_s)
+            time.sleep(wait_s)
 
-        wait_s = max(job.get("time_left_seconds", 0), job_poll_interval_ms / 1000)
-        self.logger.info("Waiting %.1fs for export job to complete", wait_s)
-        time.sleep(wait_s)
-        return self._poll_job(get_job_request, count=count + 1)
+        msg = (
+            f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
+            f"least {job_poll_interval_ms} ms apart). `job_poll_interval_ms` and "
+            "`job_poll_max_count` may need adjusting."
+        )
+        raise RuntimeError(msg)
 
 
 class ClientsStream(Auth0Stream):
