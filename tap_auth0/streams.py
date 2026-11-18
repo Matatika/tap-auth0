@@ -85,7 +85,7 @@ class UsersStream(Auth0Stream):
         if count > job_poll_max_count:
             msg = (
                 f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
-                f"{job_poll_interval_ms} ms intervals). `job_poll_interval_ms` and "
+                f"least {job_poll_interval_ms} ms apart). `job_poll_interval_ms` and "
                 "`job_poll_max_count` may need adjusting."
             )
             raise RuntimeError(msg)
@@ -106,7 +106,9 @@ class UsersStream(Auth0Stream):
             msg = f"Job '{id_}' failed ({summary_format})"
             raise RuntimeError(msg)
 
-        time.sleep(job_poll_interval_ms / 1000)
+        wait_s = max(job.get("time_left_seconds", 0), job_poll_interval_ms / 1000)
+        self.logger.info("Waiting %.1fs for export job to complete", wait_s)
+        time.sleep(wait_s)
         return self._poll_job(get_job_request, count=count + 1)
 
 

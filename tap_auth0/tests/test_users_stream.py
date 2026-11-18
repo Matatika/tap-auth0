@@ -4,6 +4,7 @@
 
 import gzip
 import json
+import time
 
 import responses
 
@@ -42,3 +43,31 @@ def test_users_sync_retries_rate_limited_job_poll(capsys):
     messages = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
     records = [m["record"] for m in messages if m["type"] == "RECORD"]
     assert records == [user]
+
+
+@responses.activate
+def test_users_job_poll_waits_for_time_left_seconds():
+    """A processing job is polled again after its `time_left_seconds`."""
+    job_url = "https://test.auth0.com/api/v2/jobs/job_1"
+    responses.post(
+        "https://test.auth0.com/oauth/token",
+        json={"access_token": "token", "expires_in": 3600},
+    )
+    responses.post(
+        "https://test.auth0.com/api/v2/jobs/users-exports",
+        json={"id": "job_1", "status": "pending"},
+    )
+    responses.get(
+        job_url,
+        json={"id": "job_1", "status": "processing", "time_left_seconds": 1},
+    )
+    responses.get(
+        job_url,
+        json={"id": "job_1", "status": "completed", "location": "https://test.com"},
+    )
+    responses.get("https://test.com", body=gzip.compress(b"{}"))
+
+    start = time.monotonic()
+    TapAuth0(config=CONFIG).streams["stream_auth0_users"].sync()
+
+    assert time.monotonic() - start >= 1
