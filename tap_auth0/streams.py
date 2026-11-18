@@ -10,6 +10,7 @@ import time
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
+from singer_sdk.authenticators import SimpleAuthenticator
 from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
@@ -70,7 +71,7 @@ class UsersStream(Auth0Stream):
         # necessary to prevent 400 Bad Request `Only one auth mechanism allowed` error
         # when requesting data from a completed job `location`, where `X-Amz-Algorithm`
         # is present in the URL
-        self.authenticator = None
+        self.authenticator = SimpleAuthenticator()
 
         return super().get_records(context)
 
@@ -173,6 +174,6 @@ class LogsStream(Auth0Stream):
     @override
     def post_process(self, row, context=None):
         row = super().post_process(row, context)
-        if isinstance(scope := row.get("scope"), str):
-            row.update({"scope": scope.split()})
+        if isinstance(scope := row.get("scope"), str):  # ty: ignore[missing-union-attribute]
+            row.update({"scope": scope.split()})  # ty: ignore[missing-union-attribute]
         return row

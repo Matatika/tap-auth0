@@ -1,10 +1,18 @@
-[tool.poetry]
+[build-system]
+requires = [
+    "hatchling>=1,<2",
+    "hatch-vcs>=0.5",
+]
+build-backend = "hatchling.build"
+
+[project]
 name = "tap-auth0"
-version = "0.5.0"
+dynamic = ["version"]
 description = "`tap-auth0` is a Singer tap for Auth0, built with the Meltano SDK for Singer Taps."
+readme = "README.md"
 authors = [
-    "Reuben Frankel <rfrankel@matatika.com>",
-    "Daniel Walker <dwalker@matatika.com>",
+    { name = "Reuben Frankel", email = "rfrankel@matatika.com" },
+    { name = "Daniel Walker", email = "dwalker@matatika.com" },
 ]
 keywords = [
     "ELT",
@@ -16,64 +24,135 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 license = "AGPL-3.0-only"
-packages = [
-    { include = "tap_auth0" },
+license-files = [ "LICENSE" ]
+requires-python = ">=3.10"
+dependencies = [
+    "singer-sdk~=0.54.9",
+    "requests~=2.34.0",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-singer-sdk = "^0.48.1"
-fs-s3fs = { version = "^1.1.1", optional = true }
-requests = "^2.34.2"
+[project.optional-dependencies]
+s3 = [
+    "s3fs>=2026.1.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^9.2.0"
-singer-sdk = { version="^0.48.1", extras = ["testing"] }
-responses = "^0.26.3"
+[project.scripts]
+# CLI declaration
+tap-auth0 = 'tap_auth0.tap:TapAuth0.cli'
 
-[tool.poetry.extras]
-s3 = ["fs-s3fs"]
+[dependency-groups]
+dev = [
+    { include-group = "test" },
+]
+test = [
+    "pytest>=9",
+    "pytest-github-actions-annotate-failures>=0.4",
+    "responses>=0.26.3",
+    "singer-sdk[testing]",
+]
+typing = [
+    "mypy>=2.1",
+    "ty>=0.0.41",
+]
+
+[tool.hatch.version]
+fallback-version = "0.1.0.dev0"
+source = "vcs"
 
 [tool.mypy]
-python_version = "3.11"
+enable_error_code = [
+    "ignore-without-code",
+    "redundant-expr",
+    "truthy-bool",
+]
+warn_redundant_casts = true
+warn_unreachable = true
 warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.ty.rules]
+missing-override-decorator = "error"
+unused-type-ignore-comment = "ignore"
+
+[tool.pytest]
+addopts = [
+    "-ra",
+]
+filterwarnings = [
+    "error",
+    "once:No records were available to test:UserWarning",
+    "once:Fields in transformed catalog but not in records:UserWarning",
+    "once:Python 3.* its end of life:FutureWarning",
+]
+log_level = "INFO"
+minversion = "9"
+strict = true
+testpaths = [
+    "tests",
+]
 
 [tool.ruff]
-src = ["tap_auth0"]
-target-version = "py310"
+line-length = 100
+required-version = ">=0.16.0"
 
 [tool.ruff.lint]
+future-annotations = true
 ignore = [
     "ANN001",  # missing-type-function-argument
+    "ANN002",  # missing-type-args
+    "ANN003",  # missing-type-kwargs
     "ANN201",  # missing-return-type-undocumented-public-function
     "ANN202",  # missing-return-type-private-function
     "COM812",  # missing-trailing-comma
-    "ISC001",  # single-line-implicit-string-concatenation
 ]
 select = ["ALL"]
 
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
 [tool.ruff.lint.per-file-ignores]
-"tap_auth0/types/**/*" = [
-    "D101",   # undocumented-public-class
-    "N805",   # invalid-first-argument-name-for-method
-]
-"tap_auth0/tests/**/*" = [
+"tests/**/*.py" = [
     "S101",     # assert
     "PLR2004",  # magic-value-comparison
 ]
 
-[tool.ruff.flake8-annotations]
-allow-star-arg-any = true
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
-[tool.ruff.isort]
-known-first-party = ["tap_auth0"]
+# This configuration can be used to customize tox environments
+[tool.tox]
+requires = [
+    "tox>=4.53",
+    "tox-uv>=1.35",
+]
+env_list = [
+    "typing",
+    { prefix = "3.", start = 10 },
+]
 
-[build-system]
-requires = ["poetry-core==1.8.1"]
-build-backend = "poetry.core.masonry.api"
+[tool.tox.env_run_base]
+description = "run tests on Python {env_name}"
+runner = "uv-venv-lock-runner"
+pass_env = [
+    "CI",
+    "GITHUB_*",
+    "TAP_AUTH0_*",
+]
+dependency_groups = [ "test" ]
+commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 
-[tool.poetry.scripts]
-# CLI declaration
-tap-auth0 = 'tap_auth0.tap:TapAuth0.cli'
+[tool.tox.env.typing]
+description = "type checks"
+dependency_groups = [ "test", "typing" ]
+commands = [
+    [ "mypy", { replace = "posargs", default = [ "tap_auth0", "tests" ], extend = true } ],
+    [ "ty", "check", { replace = "posargs", default = [ "tap_auth0", "tests" ], extend = true } ],
+]
+
+[tool.typos.default.extend-words]
+pn = "pn"  # push notification, in Auth0 log event types

@@ -3,21 +3,26 @@
 """Auth0 Authentication."""
 
 from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta
-from typing_extensions import Self, override
+from typing_extensions import override
 
 
 class Auth0Authenticator(OAuthAuthenticator, metaclass=SingletonMeta):
     """Authenticator class for Auth0."""
 
-    @property
-    def domain(self):
-        """Auth0 tenant domain."""
-        return self.config["domain"]
+    def __init__(self, *, domain: str, client_id: str, client_secret: str) -> None:
+        """Create an authenticator for an Auth0 tenant.
 
-    @property
-    @override
-    def auth_endpoint(self):
-        return f"https://{self.domain}/oauth/token"
+        Args:
+            domain: Auth0 tenant domain.
+            client_id: Client ID of the M2M application.
+            client_secret: Client secret of the M2M application.
+        """
+        super().__init__(
+            auth_endpoint=f"https://{domain}/oauth/token",
+            client_id=client_id,
+            client_secret=client_secret,
+        )
+        self.audience = f"https://{domain}/api/v2/"
 
     @property
     @override
@@ -25,14 +30,7 @@ class Auth0Authenticator(OAuthAuthenticator, metaclass=SingletonMeta):
         """Define the OAuth request body for the Auth0 API."""
         return {
             "grant_type": "client_credentials",
-            "client_id": self.config["client_id"],
-            "client_secret": self.config["client_secret"],
-            "audience": f"https://{self.domain}/api/v2/",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "audience": self.audience,
         }
-
-    @classmethod
-    def create_for_stream(cls, stream) -> Self:
-        """Create authenticator instance for a stream."""
-        return cls(
-            stream=stream,
-        )

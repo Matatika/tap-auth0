@@ -1,28 +1,36 @@
-version: 1
 send_anonymous_usage_stats: true
-project_id: tap-auth0
+project_id: "tap-auth0"
 default_environment: test
+requires_meltano: ">=4.0"
 environments:
 - name: test
 plugins:
   extractors:
-  - name: tap-auth0
-    namespace: tap_auth0
+  - name: "tap-auth0"
+    namespace: "tap_auth0"
     pip_url: -e .
     capabilities:
     - state
     - catalog
     - discover
+    - about
+    - stream-maps
+    - structured-logging
+
     settings:
     - name: client_id
-      kind: password
+      sensitive: true
     - name: client_secret
-      kind: password
+      sensitive: true
     - name: domain
     - name: job_poll_interval_ms
       kind: integer
     - name: job_poll_max_count
       kind: integer
+
+    settings_group_validation:
+    - [client_id, client_secret, domain]
+
   loaders:
   - name: target-jsonl
     variant: andyh1203

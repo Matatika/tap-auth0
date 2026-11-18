@@ -27,7 +27,11 @@ class Auth0Stream(RESTStream):
     @cached_property
     @override
     def authenticator(self):
-        return Auth0Authenticator.create_for_stream(self)
+        return Auth0Authenticator(
+            domain=self.config["domain"],
+            client_id=self.config["client_id"],
+            client_secret=self.config["client_secret"],
+        )
 
     @override
     def get_url_params(self, context, next_page_token):
