@@ -6,6 +6,7 @@ import gzip
 import json
 import time
 
+import pytest
 import responses
 
 from tap_auth0.tap import TapAuth0
@@ -47,7 +48,7 @@ def test_users_sync_retries_rate_limited_job_poll(capsys):
 
 @responses.activate
 def test_users_job_poll_waits_for_time_left_seconds():
-    """A processing job is polled again after its `time_left_seconds`."""
+    """A `processing` job is polled again after its `time_left_seconds`."""
     job_url = "https://test.auth0.com/api/v2/jobs/job_1"
     responses.post(
         "https://test.auth0.com/oauth/token",
@@ -71,3 +72,23 @@ def test_users_job_poll_waits_for_time_left_seconds():
     TapAuth0(config=CONFIG).streams["stream_auth0_users"].sync()
 
     assert time.monotonic() - start >= 1
+
+
+@responses.activate
+def test_users_job_poll_stops_at_max_count():
+    """A job that stays `processing` fails after `job_poll_max_count` polls."""
+    job_url = "https://test.auth0.com/api/v2/jobs/job_1"
+    responses.post(
+        "https://test.auth0.com/oauth/token",
+        json={"access_token": "token", "expires_in": 3600},
+    )
+    responses.post(
+        "https://test.auth0.com/api/v2/jobs/users-exports",
+        json={"id": "job_1", "status": "pending"},
+    )
+    poll = responses.get(job_url, json={"id": "job_1", "status": "processing"})
+
+    with pytest.raises(RuntimeError, match="Export users job incomplete"):
+        TapAuth0(config=CONFIG | {"job_poll_max_count": 2}).streams["stream_auth0_users"].sync()
+
+    assert poll.call_count == 2

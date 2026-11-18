@@ -2,8 +2,14 @@
 
 """Auth0 Authentication."""
 
+import sys
+
 from singer_sdk.authenticators import OAuthAuthenticator, SingletonMeta
-from typing_extensions import override
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 
 class Auth0Authenticator(OAuthAuthenticator, metaclass=SingletonMeta):

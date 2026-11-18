@@ -6,18 +6,23 @@ from __future__ import annotations
 
 import gzip
 import json
+import sys
 import time
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from singer_sdk.authenticators import SimpleAuthenticator
-from typing_extensions import override
 
 from tap_auth0.client import Auth0Stream
 from tap_auth0.pagination import LogsPaginator
 from tap_auth0.schemas.client import ClientObject
 from tap_auth0.schemas.log import LogObject
 from tap_auth0.schemas.user import UserObject
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     import requests
@@ -79,38 +84,37 @@ class UsersStream(Auth0Stream):
     def parse_response(self, response):
         yield from map(json.loads, gzip.decompress(response.content).splitlines())
 
-    def _poll_job(self, get_job_request: requests.PreparedRequest, count=1):
+    def _poll_job(self, get_job_request: requests.PreparedRequest):
         job_poll_interval_ms = self.config["job_poll_interval_ms"]
         job_poll_max_count = self.config["job_poll_max_count"]
 
-        if count > job_poll_max_count:
-            msg = (
-                f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
-                f"least {job_poll_interval_ms} ms apart). `job_poll_interval_ms` and "
-                "`job_poll_max_count` may need adjusting."
-            )
-            raise RuntimeError(msg)
+        for _ in range(job_poll_max_count):
+            get_job_response = self.request_decorator(self._request)(get_job_request, None)
+            job = get_job_response.json()
 
-        get_job_response = self.request_decorator(self._request)(get_job_request, None)
-        job = get_job_response.json()
+            status = job["status"]
 
-        status = job["status"]
+            if status == "completed":
+                return job
 
-        if status == "completed":
-            return job
+            if status == "failed":
+                id_ = job["id"]
+                summary: dict[str, int] = job["summary"]
+                summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
 
-        if status == "failed":
-            id_ = job["id"]
-            summary: dict[str, int] = job["summary"]
-            summary_format = ", ".join(f"{k}: {v}" for k, v in summary.items())
+                msg = f"Job '{id_}' failed ({summary_format})"
+                raise RuntimeError(msg)
 
-            msg = f"Job '{id_}' failed ({summary_format})"
-            raise RuntimeError(msg)
+            wait_s = max(job.get("time_left_seconds", 0), job_poll_interval_ms / 1000)
+            self.logger.info("Waiting %.1fs for export job to complete", wait_s)
+            time.sleep(wait_s)
 
-        wait_s = max(job.get("time_left_seconds", 0), job_poll_interval_ms / 1000)
-        self.logger.info("Waiting %.1fs for export job to complete", wait_s)
-        time.sleep(wait_s)
-        return self._poll_job(get_job_request, count=count + 1)
+        msg = (
+            f"Export users job incomplete (polled {job_poll_max_count} time(s) at "
+            f"least {job_poll_interval_ms} ms apart). `job_poll_interval_ms` and "
+            "`job_poll_max_count` may need adjusting."
+        )
+        raise RuntimeError(msg)
 
 
 class ClientsStream(Auth0Stream):
