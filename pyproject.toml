@@ -32,6 +32,7 @@ requests = "^2.32.5"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
 singer-sdk = { version="^0.48.1", extras = ["testing"] }
+responses = "^0.26.3"
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]

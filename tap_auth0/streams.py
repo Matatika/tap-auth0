@@ -51,7 +51,9 @@ class UsersStream(Auth0Stream):
             },
         )
 
-        export_users_job = self._request(create_export_users_job_request, None)
+        export_users_job = self.request_decorator(self._request)(
+            create_export_users_job_request, None
+        )
         job_id = export_users_job.json()["id"]
 
         # poll export users job
@@ -88,7 +90,7 @@ class UsersStream(Auth0Stream):
             )
             raise RuntimeError(msg)
 
-        get_job_response = self._request(get_job_request, None)
+        get_job_response = self.request_decorator(self._request)(get_job_request, None)
         job = get_job_response.json()
 
         status = job["status"]
